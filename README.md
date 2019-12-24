@@ -1,4 +1,5 @@
-    
+    ------------------------ In Support Activity APIs -----------------------------
+        
     public void setDefaultAnimation(FragmentAnimation animation);
 
     public FragmentAnimation getDefaultAnimation();
@@ -24,6 +25,8 @@
     public void popTo(Class cls);
 
     public void popTo(Class cls, boolean includeTarget);
+    
+------------------------ In Support Fragment APIs -----------------------------
     
     public boolean dispatcherOnBackPressed();
 
