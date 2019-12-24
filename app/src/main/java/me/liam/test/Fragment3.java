@@ -26,7 +26,13 @@ public class Fragment3 extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = View.inflate(getContext(), R.layout.f1,null);
+        rootView = View.inflate(getContext(), R.layout.f3,null);
+        rootView.findViewById(R.id.btn3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadRootFragment(R.id.container,SettingsFragment.newInstance());
+            }
+        });
         return rootView;
     }
 }

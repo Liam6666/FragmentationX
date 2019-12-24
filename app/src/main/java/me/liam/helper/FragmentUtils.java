@@ -1,7 +1,9 @@
 package me.liam.helper;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,9 +24,9 @@ public class FragmentUtils {
         return list;
     }
 
-    public static <T extends Fragment> T findFragmentByClass(FragmentManager fm, Class cls){
-        for (SupportFragment f : getInManagerFragments(fm)){
-            if (f.getClass().getName().equals(cls.getClass().getName())){
+    public static <T extends SupportFragment> T findFragmentByClass(FragmentManager fm, Class cls){
+        for (Fragment f : fm.getFragments()){
+            if (f instanceof SupportFragment && f.getClass().getName().equals(cls.getName())){
                 return (T) f;
             }
         }
@@ -59,24 +61,38 @@ public class FragmentUtils {
         return null;
     }
 
-
-    public static SupportFragment getTopOne(FragmentManager fm){
+    public static List<SupportFragment> getActiveList(FragmentManager fm){
         List<SupportFragment> list = new ArrayList<>();
         for (Fragment f : fm.getFragments()){
-            if (f instanceof SupportFragment && !f.isRemoving() && !f.isDetached()){
+            if (f instanceof SupportFragment
+                    && f.isAdded()
+                    && f.isVisible()
+                    && !f.isRemoving()
+                    && !f.isDetached()
+                    && f.isResumed()){
                 list.add((SupportFragment) f);
             }
         }
-        if (list.size() == 0) return null;
-        return list.get(0);
+        return list;
     }
 
+    public static SupportFragment getLastActiveFragment(FragmentManager fm){
+        LinkedList<SupportFragment> linkedList = new LinkedList<>();
+        linkedList.addAll(getActiveList(fm));
+        try {
+            return linkedList.getLast();
+        }catch (NoSuchElementException e){
+            return null;
+        }
+    }
 
-    public static SupportFragment getLastOne(FragmentManager fm){
-        List<SupportFragment> list = getInManagerFragments(fm);
-       for (int i = list.size() - 1; i >= 0; i --){
-           return list.get(i);
-       }
-       return null;
+    public static SupportFragment getLastFragment(FragmentManager fm){
+        LinkedList<SupportFragment> linkedList = new LinkedList<>();
+        linkedList.addAll(getInManagerFragments(fm));
+        try {
+            return linkedList.getLast();
+        }catch (NoSuchElementException e){
+            return null;
+        }
     }
 }

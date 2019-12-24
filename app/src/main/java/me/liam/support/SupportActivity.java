@@ -7,6 +7,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.liam.anim.DefaultAnimation;
@@ -16,9 +17,9 @@ import me.liam.helper.FragmentUtils;
 
 public class SupportActivity extends AppCompatActivity implements ISupportActivity {
 
-    SupportTransaction supportTransaction;
+    private SupportTransaction supportTransaction;
 
-    FragmentAnimation defaultAnimation = new DefaultAnimation();
+    private FragmentAnimation defaultAnimation = new DefaultAnimation();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,9 +30,14 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getFragments().size() > 1){
-            pop();
+            SupportFragment activeFragment = FragmentUtils.getLastActiveFragment(getSupportFragmentManager());
+            if (activeFragment != null){
+                if (!activeFragment.dispatcherOnBackPressed()){
+                    ActivityCompat.finishAfterTransition(this);
+                }
+            }
         }else {
-            super.onBackPressed();
+            ActivityCompat.finishAfterTransition(this);
         }
     }
 
@@ -51,7 +57,7 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     }
 
     @Override
-    public <T extends Fragment> T findFragmentByClass(Class cls) {
+    public <T extends SupportFragment> T findFragmentByClass(Class cls) {
         return FragmentUtils.findFragmentByClass(getSupportFragmentManager(),cls);
     }
 
@@ -77,7 +83,7 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     @Override
     public void start(SupportFragment to) {
-        supportTransaction.start(FragmentUtils.getTopOne(getSupportFragmentManager()),to);
+        supportTransaction.start(FragmentUtils.getLastFragment(getSupportFragmentManager()),to);
     }
 
     @Override
@@ -86,9 +92,26 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     }
 
     @Override
+    public void startWithPop(SupportFragment from, SupportFragment to) {
+        supportTransaction.startWithPop(from, to);
+    }
+
+    @Override
     public void pop() {
         supportTransaction.pop(getSupportFragmentManager());
     }
 
+    @Override
+    public void popTo(Class cls) {
+        supportTransaction.popTo(getSupportFragmentManager(),cls,true);
+    }
 
+    @Override
+    public void popTo(Class cls, boolean includeTarget) {
+        supportTransaction.popTo(getSupportFragmentManager(),cls,includeTarget);
+    }
+
+    public SupportTransaction getSupportTransaction() {
+        return supportTransaction;
+    }
 }

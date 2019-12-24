@@ -1,9 +1,9 @@
 package me.liam.support;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +25,17 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     SupportFragmentVisible supportFragmentVisible = new SupportFragmentVisible();
 
-    private ISupportAnimation iSupportAnimation;
+    Handler handler;
+
+    private SupportFragmentCallBack callBack;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         supportFragmentVisible.onAttach(this);
-        if (fragmentAnimation != null){
-            fragmentAnimation.loadAnim(this);
+        FragmentAnimation animation = onCreateCustomerAnimation();
+        if (animation != null){
+            setFragmentAnimation(animation);
         }
     }
 
@@ -46,19 +49,14 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         supportFragmentVisible.onActivityCreated(savedInstanceState);
+        if (getView() != null) {
+            getView().setClickable(true);
+        }
         if (isSavedInstance()){
             resumeAnim();
         }else {
 
-//            if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM)){
-//                getFragmentAnimation().playEnterAnim();
-//            }
-//            SupportFragment beforeOne = FragmentUtils.getBeforeOne(getFragmentManager(),SupportFragment.this);
-//            if (beforeOne != null){
-//                beforeOne.getFragmentAnimation().playPopExitAnim();
-//            }
         }
-
     }
 
     @Override
@@ -71,21 +69,36 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         Animation animation = null;
-//        if (isSavedInstance()){
-//            return AnimationUtils.loadAnimation(getContext(),R.anim.anim_empty);
-//        }
-        if (iSupportAnimation != null){
-            iSupportAnimation.onTargetFragmentCreateAnimations(transit, enter, nextAnim);
-        }
         switch (transit){
             case FragmentTransaction.TRANSIT_FRAGMENT_OPEN:
                 if (enter){
-                    animation = getFragmentAnimation().getEnterAnim();
+                    if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM)){
+                        animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_empty);
+                    }else {
+                        SupportFragment beforeOne = FragmentUtils.getBeforeOne(getFragmentManager(),this);
+                        animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getEnterAnimId());
+                        if (beforeOne != null){
+                            beforeOne.onCreatePopAnimations(false);
+                        }
+                    }
+                    getHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callBack != null){
+                                callBack.onEnterAnimEnd();
+                            }
+                            onEnterAnimEnd();
+                        }
+                    },animation.getDuration());
                 }
                 break;
             case FragmentTransaction.TRANSIT_FRAGMENT_CLOSE:
                 if (!enter){
-                    animation = getFragmentAnimation().getExitAnim();
+                    SupportFragment show = FragmentUtils.getLastActiveFragment(getFragmentManager());
+                    if (show != null){
+                        show.onCreatePopAnimations(true);
+                    }
+                    animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getExitAnimId());
                 }
                 break;
         }
@@ -99,18 +112,28 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         getArguments().putBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE,true);
     }
 
+    public void onCreatePopAnimations(boolean popEnter){
+        Animation animation = null;
+        if (popEnter){
+            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopEnterAnimId());
+        }else {
+            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopExitAnimId());
+        }
+        if (getView() != null){
+            getView().startAnimation(animation);
+        }
+    }
+
     public boolean isSavedInstance(){
         return getArguments().getBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE,false);
     }
 
     private void resumeAnim(){
-        if (fragmentAnimation != null) return;
         fragmentAnimation = new FragmentAnimation(
                 getArguments().getInt(SupportTransaction.FRAGMENTATION_ENTER_ANIM_ID,R.anim.anim_empty),
                 getArguments().getInt(SupportTransaction.FRAGMENTATION_EXIT_ANIM_ID,R.anim.anim_empty),
                 getArguments().getInt(SupportTransaction.FRAGMENTATION_POP_ENTER_ANIM_ID,R.anim.anim_empty),
                 getArguments().getInt(SupportTransaction.FRAGMENTATION_POP_EXIT_ANIM_ID,R.anim.anim_empty));
-        fragmentAnimation.loadAnim(this);
     }
 
     FragmentAnimation getFragmentAnimation() {
@@ -118,26 +141,149 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     void setFragmentAnimation(FragmentAnimation animation) {
-        this.fragmentAnimation = animation;
-        if (this.fragmentAnimation == null){
+        if (animation == null){
             this.fragmentAnimation = new NoneAnim();
+        }else {
+            this.fragmentAnimation = animation;
         }
-        getArguments().putInt(SupportTransaction.FRAGMENTATION_ENTER_ANIM_ID,animation.getEnterAnimId());
-        getArguments().putInt(SupportTransaction.FRAGMENTATION_EXIT_ANIM_ID,animation.getExitAnimId());
-        getArguments().putInt(SupportTransaction.FRAGMENTATION_POP_ENTER_ANIM_ID,animation.getPopEnterAnimId());
-        getArguments().putInt(SupportTransaction.FRAGMENTATION_POP_EXIT_ANIM_ID,animation.getPopExitAnimId());
+        getArguments().putInt(SupportTransaction.FRAGMENTATION_ENTER_ANIM_ID,fragmentAnimation.getEnterAnimId());
+        getArguments().putInt(SupportTransaction.FRAGMENTATION_EXIT_ANIM_ID,fragmentAnimation.getExitAnimId());
+        getArguments().putInt(SupportTransaction.FRAGMENTATION_POP_ENTER_ANIM_ID,fragmentAnimation.getPopEnterAnimId());
+        getArguments().putInt(SupportTransaction.FRAGMENTATION_POP_EXIT_ANIM_ID,fragmentAnimation.getPopExitAnimId());
+    }
+
+    int getContainerId(){
+        return getArguments().getInt(SupportTransaction.FRAGMENTATION_CONTAINER_ID,0);
+    }
+
+    @Override
+    public boolean dispatcherOnBackPressed() {
+        if (getChildFragmentManager().getFragments().size() > 0){
+            SupportFragment lastActive = FragmentUtils.getLastActiveFragment(getChildFragmentManager());
+            if (lastActive != null){
+                return lastActive.dispatcherOnBackPressed();
+            }
+        }
+        return onBackPressed();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        pop();
+        return true;
+    }
+
+    @Override
+    public boolean onBackPressedChild() {
+        pop();
+        return true;
+    }
+
+    @Override
+    public FragmentAnimation onCreateCustomerAnimation() {
+        return null;
+    }
+
+    @Override
+    public void onEnterAnimEnd() {
+
+    }
+
+    @Override
+    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .loadRootFragment(getChildFragmentManager(),containerId,to,anim,playEnterAnim);
+    }
+
+    @Override
+    public void loadRootFragment(int containerId, SupportFragment to) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .loadRootFragment(getChildFragmentManager(),containerId,to,null,false);
+    }
+
+    @Override
+    public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .loadMultipleRootFragments(getChildFragmentManager(),containerId,showPosition,fragments);
+    }
+
+    @Override
+    public void showHideAllFragment(SupportFragment show) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .showHideAllFragment(getChildFragmentManager(),show);
     }
 
     @Override
     public void start(SupportFragment to) {
-        ((ISupportActivity)getActivity()).start(this,to);
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .start(this,to);
     }
 
-    public ISupportAnimation getiSupportAnimation() {
-        return iSupportAnimation;
+
+    @Override
+    public void startWithPop(SupportFragment to) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .startWithPop(this,to);
     }
 
-    public void setiSupportAnimation(ISupportAnimation iSupportAnimation) {
-        this.iSupportAnimation = iSupportAnimation;
+    @Override
+    public void pop() {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .pop(getFragmentManager());
     }
+
+    @Override
+    public void popTo(Class cls) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .popTo(getFragmentManager(),cls,true);
+    }
+
+    @Override
+    public void popTo(Class cls, boolean includeTarget) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .popTo(getFragmentManager(),cls,includeTarget);
+    }
+
+    @Override
+    public void popChild() {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .pop(getChildFragmentManager());
+    }
+
+    @Override
+    public void popChildTo(Class cls) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .popTo(getChildFragmentManager(),cls,true);
+    }
+
+    @Override
+    public void popChildTo(Class cls, boolean includeTarget) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .popTo(getChildFragmentManager(),cls,includeTarget);
+    }
+
+
+    public Handler getHandler() {
+        if (handler == null){
+            handler = new Handler(Looper.myLooper());
+        }
+        return handler;
+    }
+
+    void setCallBack(SupportFragmentCallBack callBack) {
+        this.callBack = callBack;
+    }
+
 }

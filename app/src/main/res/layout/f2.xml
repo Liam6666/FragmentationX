@@ -3,8 +3,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
    <Button
-       android:id="@+id/btn1"
+       android:id="@+id/btn2"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:text="start to fragment2"/>
+       android:text="start to fragment3"/>
 </LinearLayout>

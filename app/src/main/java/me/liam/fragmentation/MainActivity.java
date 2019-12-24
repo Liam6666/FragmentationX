@@ -13,6 +13,7 @@ import me.liam.test.Fragment1;
 import me.liam.test.Fragment2;
 import me.liam.test.Fragment3;
 import me.liam.test.FragmentRoot;
+import me.liam.test.SettingsFragment;
 
 public class MainActivity extends SupportActivity {
 
@@ -56,6 +57,9 @@ public class MainActivity extends SupportActivity {
 //                showHideAllFragment(fragment3);
 //            }
 //        });
-        loadRootFragment(R.id.container, FragmentRoot.newInstance());
+        getSupportActionBar().hide();
+        if (findFragmentByClass(Fragment1.class) == null){
+            loadRootFragment(R.id.container, Fragment1.newInstance());
+        }
     }
 }

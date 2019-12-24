@@ -30,13 +30,13 @@ public class ActionQueue {
                 public void run() {
                     Action a = actionQueue.peek();
                     if (a != null){
-                        a.run();
+                        long duration = a.run();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 actionQueue.clear();
                             }
-                        },a.duration);
+                        },duration);
                     }else {
                         actionQueue.clear();
                     }

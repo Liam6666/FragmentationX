@@ -10,7 +10,7 @@ public interface ISupportActivity {
 
     public FragmentAnimation getDefaultAnimation();
 
-    public <T extends Fragment> T findFragmentByClass(Class cls);
+    public <T extends SupportFragment> T findFragmentByClass(Class cls);
 
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim);
 
@@ -24,5 +24,12 @@ public interface ISupportActivity {
 
     public void start(SupportFragment from, SupportFragment to);
 
+    public void startWithPop(SupportFragment from, SupportFragment to);
+
     public void pop();
+
+    public void popTo(Class cls);
+
+    public void popTo(Class cls, boolean includeTarget);
+
 }

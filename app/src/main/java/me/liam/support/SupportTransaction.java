@@ -5,17 +5,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.blankj.utilcode.util.ToastUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import me.liam.anim.FragmentAnimation;
 import me.liam.anim.NoneAnim;
+import me.liam.fragmentation.R;
 import me.liam.helper.FragmentUtils;
 import me.liam.queue.Action;
 import me.liam.queue.ActionQueue;
@@ -51,11 +56,19 @@ public class SupportTransaction {
 
     }
 
-//    SupportTransaction(Context context) {
-//        this.context = context;
-//        actionQueue = new ActionQueue(new Handler(Looper.myLooper()));
-//
-//    }
+    void onBackPressed(FragmentManager fm) {
+        if (fm.getFragments().size() > 1){
+            pop(fm);
+        }else {
+            actionQueue.enqueue(new Action() {
+                @Override
+                public long run() {
+                    ActivityCompat.finishAfterTransition(supportActivity);
+                    return 0;
+                }
+            });
+        }
+    }
 
     public Bundle getArguments(SupportFragment target){
         if (target.getArguments() == null){
@@ -76,40 +89,27 @@ public class SupportTransaction {
     }
 
     private void supportCommit(FragmentTransaction ft) {
-        ft.commitAllowingStateLoss();
+        supportCommit(ft,null);
     }
 
-    private void withPopAnim(final SupportFragment from, SupportFragment to){
-        if (to == null || from == null) return;
-        to.setiSupportAnimation(new ISupportAnimation() {
-            @Override
-            public void onTargetFragmentCreateAnimations(int transit, boolean enter, int nextAnim) {
-                switch (transit){
-                    case FragmentTransaction.TRANSIT_FRAGMENT_OPEN:
-                        if (enter){
-                            from.getFragmentAnimation().playPopExitAnim();
-                        }
-                        break;
-                    case FragmentTransaction.TRANSIT_FRAGMENT_CLOSE:
-                        if (!enter){
-                            from.getFragmentAnimation().playPopEnterAnim();
-                        }
-                        break;
-                }
-            }
-        });
+    private void supportCommit(FragmentTransaction ft,Runnable runnable) {
+        if (runnable != null){
+            ft.runOnCommit(runnable);
+        }
+        ft.commitAllowingStateLoss();
     }
 
     void loadRootFragment(final FragmentManager fm, final int containerId, final SupportFragment to, final FragmentAnimation anim, final boolean playEnterAnim){
         actionQueue.enqueue(new Action() {
             @Override
-            public void run() {
+            public long run() {
                 bindFragmentOptions(to,containerId,playEnterAnim);
                 to.setFragmentAnimation(anim);
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.add(containerId,to);
                 supportCommit(ft);
+                return 0;
             }
         });
     }
@@ -117,7 +117,7 @@ public class SupportTransaction {
     void loadMultipleRootFragments(final FragmentManager fm, final int containerId, final int showPosition, final SupportFragment... fragments){
         actionQueue.enqueue(new Action() {
             @Override
-            public void run() {
+            public long run() {
                 int position = 1;
                 FragmentTransaction ft = fm.beginTransaction();
                 for (SupportFragment to : fragments){
@@ -131,6 +131,7 @@ public class SupportTransaction {
                     }
                 }
                 supportCommit(ft);
+                return 0;
             }
         });
     }
@@ -138,7 +139,7 @@ public class SupportTransaction {
     void showHideAllFragment(final FragmentManager fm, final SupportFragment show){
         actionQueue.enqueue(new Action() {
             @Override
-            public void run() {
+            public long run() {
                 FragmentTransaction ft = fm.beginTransaction();
                 for (SupportFragment f : FragmentUtils.getInManagerFragments(fm)){
                     if (f == show){
@@ -148,6 +149,7 @@ public class SupportTransaction {
                     }
                 }
                 supportCommit(ft);
+                return 0;
             }
         });
     }
@@ -155,15 +157,14 @@ public class SupportTransaction {
     void start(final SupportFragment from, final SupportFragment to){
         actionQueue.enqueue(new Action() {
             @Override
-            public void run() {
-                if (from.getFragmentManager() == null) return;
+            public long run() {
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                bindFragmentOptions(to,from.getArguments().getInt(FRAGMENTATION_CONTAINER_ID),true);
+                bindFragmentOptions(to,from.getContainerId(),true);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.add(to.getArguments().getInt(FRAGMENTATION_CONTAINER_ID),to);
+                ft.add(to.getContainerId(),to);
                 supportCommit(ft);
-                withPopAnim(from, to);
+                return 0;
             }
         });
     }
@@ -171,18 +172,77 @@ public class SupportTransaction {
     void pop(final FragmentManager fm){
         actionQueue.enqueue(new Action() {
             @Override
-            public void run() {
-                SupportFragment remove = FragmentUtils.getLastOne(fm);
-                if (remove == null) return;
+            public long run() {
+                SupportFragment remove = FragmentUtils.getLastFragment(fm);
+                if (remove == null) return 0;
+                long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
                 ft.remove(remove);
                 supportCommit(ft);
+                return duration;
             }
+        });
+    }
 
+    void startWithPop(final SupportFragment from, final SupportFragment to){
+        actionQueue.enqueue(new Action() {
             @Override
-            public long getDuration() {
-                return ACTION_DEFAULT_DELAY;
+            public long run() {
+                FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                bindFragmentOptions(to,from.getContainerId(),true);
+                to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to);
+                supportCommit(ft);
+                to.setCallBack(new SupportFragmentCallBack(){
+                    @Override
+                    public void onEnterAnimEnd() {
+                        silencePop(from.getFragmentManager(),from);
+                    }
+                });
+                return 0;
+            }
+        });
+    }
+
+    void silencePop(final FragmentManager fm, final SupportFragment... removes){
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                FragmentTransaction ft = fm.beginTransaction();
+                for (SupportFragment f : removes){
+                    ft.remove(f);
+                }
+                supportCommit(ft);
+                return 0;
+            }
+        });
+    }
+
+    void popTo(final FragmentManager fm, final Class cls, final boolean includeTarget){
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                SupportFragment remove = FragmentUtils.getLastFragment(fm);
+                SupportFragment target = FragmentUtils.findFragmentByClass(fm,cls);
+                if (remove == null || target == null) return 0;
+                FragmentTransaction ft = fm.beginTransaction();
+                int targetIndex = fm.getFragments().indexOf(target);
+                int removeIndex = fm.getFragments().indexOf(remove);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                List<Fragment> removeList = fm.getFragments().subList(targetIndex,removeIndex);
+                if (!includeTarget){
+                    removeList.remove(target);
+                }
+                for (Fragment f : removeList){
+                    if (f instanceof SupportFragment){
+                        ft.remove(f);
+                    }
+                }
+                ft.remove(remove);
+                supportCommit(ft);
+                return 0;
             }
         });
     }
