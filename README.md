@@ -58,3 +58,20 @@
     public void popChildTo(Class cls);
 
     public void popChildTo(Class cls, boolean includeTarget);
+ 
+ 
+    ------------------------ In Develop -----------------------------
+    
+    attachSwipebackLayout
+    
+    startForResult
+    
+    setResule
+    
+    debugMode
+    
+    onVisibleChange
+    
+    and more functions in develop, welcome make 'star' and follow up me
+    
+    Thanks for https://github.com/YoKeyword/Fragmentation [DEPRECATED] 
