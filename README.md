@@ -26,7 +26,7 @@
 
     public void popTo(Class cls, boolean includeTarget);
     
------------------------- In Support Fragment APIs -----------------------------
+    ------------------------ In Support Fragment APIs -----------------------------
     
     public boolean dispatcherOnBackPressed();
 
