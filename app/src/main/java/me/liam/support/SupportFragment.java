@@ -14,10 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 import me.liam.anim.FragmentAnimation;
 import me.liam.anim.NoneAnim;
 import me.liam.fragmentation.R;
 import me.liam.helper.FragmentUtils;
+import me.liam.swipeback.SwipeBackLayout;
 
 public class SupportFragment extends Fragment implements ISupportFragment {
 
@@ -28,6 +30,8 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     Handler handler;
 
     private SupportFragmentCallBack callBack;
+
+    private SwipeBackLayout swipeBackLayout;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,8 +58,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         }
         if (isSavedInstance()){
             resumeAnim();
-        }else {
-
         }
     }
 
@@ -113,11 +115,23 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     public void onCreatePopAnimations(boolean popEnter){
-        Animation animation = null;
+        Animation animation;
         if (popEnter){
             animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopEnterAnimId());
+            getHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSupportResume();
+                }
+            },animation.getDuration());
         }else {
             animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopExitAnimId());
+            getHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSupportPause();
+                }
+            },animation.getDuration());
         }
         if (getView() != null){
             getView().startAnimation(animation);
@@ -159,7 +173,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     @Override
     public boolean dispatcherOnBackPressed() {
         if (getChildFragmentManager().getFragments().size() > 0){
-            SupportFragment lastActive = FragmentUtils.getLastActiveFragment(getChildFragmentManager());
+            SupportFragment lastActive = FragmentUtils.getLastAddBackStackFragment(getChildFragmentManager());
             if (lastActive != null){
                 return lastActive.dispatcherOnBackPressed();
             }
@@ -169,12 +183,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     @Override
     public boolean onBackPressed() {
-        pop();
-        return true;
-    }
-
-    @Override
-    public boolean onBackPressedChild() {
         pop();
         return true;
     }
@@ -190,17 +198,39 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     @Override
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim) {
+    public void onSupportPause() {
+
+    }
+
+    @Override
+    public void onSupportResume() {
+
+    }
+
+    @Override
+    public void onResult(int requestCode, int resultCode, Bundle data) {
+
+    }
+
+    @Override
+    public void setResult(int resultCode, Bundle data) {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()
-                .loadRootFragment(getChildFragmentManager(),containerId,to,anim,playEnterAnim);
+                .setResult(this,resultCode,data);
+    }
+
+    @Override
+    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .loadRootFragment(getChildFragmentManager(),containerId,to,anim,playEnterAnim,addToBackStack);
     }
 
     @Override
     public void loadRootFragment(int containerId, SupportFragment to) {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()
-                .loadRootFragment(getChildFragmentManager(),containerId,to,null,false);
+                .loadRootFragment(getChildFragmentManager(),containerId,to,null,false,true);
     }
 
     @Override
@@ -221,7 +251,21 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     public void start(SupportFragment to) {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()
-                .start(this,to);
+                .start(this,to,true);
+    }
+
+    @Override
+    public void start(SupportFragment to, boolean addToBackStack) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .start(this,to,addToBackStack);
+    }
+
+    @Override
+    public void startForResult(SupportFragment to, int requestCode) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .startForResult(this,to,requestCode);
     }
 
 
@@ -286,4 +330,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         this.callBack = callBack;
     }
 
+    public SwipeBackLayout attachSwipeBack(View v){
+        swipeBackLayout = new SwipeBackLayout(getContext());
+        swipeBackLayout.setContentView(v);
+        return swipeBackLayout;
+    }
 }

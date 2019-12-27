@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.liam.support.SupportFragment;
+import me.liam.support.SupportTransaction;
 
 public class FragmentUtils {
 
@@ -89,6 +90,30 @@ public class FragmentUtils {
     public static SupportFragment getLastFragment(FragmentManager fm){
         LinkedList<SupportFragment> linkedList = new LinkedList<>();
         linkedList.addAll(getInManagerFragments(fm));
+        try {
+            return linkedList.getLast();
+        }catch (NoSuchElementException e){
+            return null;
+        }
+    }
+
+    public static SupportFragment getLastAddBackStackFragment(FragmentManager fm){
+        LinkedList<SupportFragment> linkedList = new LinkedList<>();
+        for (Fragment f : fm.getFragments()){
+            boolean addBackStack = false;
+            if (f.getArguments() != null){
+                addBackStack = f.getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK);
+            }
+            if (f instanceof SupportFragment
+                    && f.isAdded()
+                    && f.isVisible()
+                    && !f.isRemoving()
+                    && !f.isDetached()
+                    && f.isResumed()
+                    && addBackStack){
+                linkedList.add((SupportFragment) f);
+            }
+        }
         try {
             return linkedList.getLast();
         }catch (NoSuchElementException e){

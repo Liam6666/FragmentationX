@@ -2,6 +2,7 @@ package me.liam.queue;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -17,6 +18,19 @@ public class ActionQueue {
     }
 
     public void enqueue(final Action action){
+        if (action.actionType() == Action.TYPE_LOAD){
+            if (Thread.currentThread() == Looper.getMainLooper().getThread()){
+                action.run();
+            }else {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        action.run();
+                    }
+                });
+            }
+            return;
+        }
         if (!actionQueue.isEmpty()) return;
         actionQueue.add(action);
         handlerAction(action);

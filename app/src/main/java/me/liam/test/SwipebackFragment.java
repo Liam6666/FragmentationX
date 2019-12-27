@@ -9,30 +9,32 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import me.liam.fragmentation.R;
 import me.liam.support.SupportFragment;
+import me.liam.swipeback.SwipeBackLayout;
 
-public class Fragment3 extends SupportFragment {
+/**
+ * Created by Augustine on 2019/12/27.
+ * <p>
+ * email:nice_ohoh@163.com
+ */
+public class SwipebackFragment extends SupportFragment {
 
-    public static Fragment3 newInstance() {
+    public static SwipebackFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        Fragment3 fragment = new Fragment3();
+        SwipebackFragment fragment = new SwipebackFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    private View rootView;
+    private SwipeBackLayout rootView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = View.inflate(getContext(), R.layout.f3,null);
-        rootView.findViewById(R.id.btn3).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadRootFragment(R.id.container,SettingsFragment.newInstance());
-            }
-        });
-        return attachSwipeBack(rootView);
+        rootView = new SwipeBackLayout(getContext());
+        View view = View.inflate(getContext(), R.layout.f1,null);
+        rootView.setContentView(view);
+        return rootView;
     }
 }

@@ -33,6 +33,7 @@ public class SupportTransaction {
     final public static String FRAGMENTATION_FULL_NAME = "Fragmentation:FullName";
     final public static String FRAGMENTATION_PLAY_ENTER_ANIM = "Fragmentation:PlayEnterAnim";
     final public static String FRAGMENTATION_INIT_LIST = "Fragmentation:InitList";
+    final public static String FRAGMENTATION_BACK_STACK = "Fragmentation:AddToBackStack";
 
     final public static String FRAGMENTATION_ENTER_ANIM_ID = "Fragmentation:EnterAnimId";
     final public static String FRAGMENTATION_EXIT_ANIM_ID = "Fragmentation:ExitAnimId";
@@ -40,6 +41,11 @@ public class SupportTransaction {
     final public static String FRAGMENTATION_POP_EXIT_ANIM_ID = "Fragmentation:PopExitAnimId";
 
     final public static String FRAGMENTATION_SAVED_INSTANCE = "Fragmentation:SavedInstance";
+
+    final public static String FRAGMENTATION_REQUEST_CODE = "Fragmentation:RequestCode";
+    final public static String FRAGMENTATION_FROM_REQUEST_CODE = "Fragmentation:FromRequestCode";
+    final public static String FRAGMENTATION_RESULT_CODE = "Fragmentation:ResultCode";
+    final public static String FRAGMENTATION_RESULT_DATA = "Fragmentation:ResultData";
 
     private ISupportActivity iSupportActivity;
 
@@ -77,7 +83,7 @@ public class SupportTransaction {
         return target.getArguments();
     }
 
-    private void bindFragmentOptions(SupportFragment target, int containerId, boolean playEnterAnim){
+    private void bindFragmentOptions(SupportFragment target, int containerId, boolean playEnterAnim, boolean addToBackStack){
         Bundle args = getArguments(target);
         args.putInt(FRAGMENTATION_CONTAINER_ID, containerId);
         args.putString(FRAGMENTATION_TAG, UUID.randomUUID().toString());
@@ -86,6 +92,7 @@ public class SupportTransaction {
         args.putBoolean(FRAGMENTATION_PLAY_ENTER_ANIM, playEnterAnim);
         args.putBoolean(FRAGMENTATION_INIT_LIST, false);
         args.putBoolean(FRAGMENTATION_SAVED_INSTANCE,false);
+        args.putBoolean(FRAGMENTATION_BACK_STACK,addToBackStack);
     }
 
     private void supportCommit(FragmentTransaction ft) {
@@ -99,11 +106,11 @@ public class SupportTransaction {
         ft.commitAllowingStateLoss();
     }
 
-    void loadRootFragment(final FragmentManager fm, final int containerId, final SupportFragment to, final FragmentAnimation anim, final boolean playEnterAnim){
+    void loadRootFragment(final FragmentManager fm, final int containerId, final SupportFragment to, final FragmentAnimation anim, final boolean playEnterAnim, final boolean addToBackStack){
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
-                bindFragmentOptions(to,containerId,playEnterAnim);
+                bindFragmentOptions(to,containerId,playEnterAnim,addToBackStack);
                 to.setFragmentAnimation(anim);
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -121,7 +128,7 @@ public class SupportTransaction {
                 int position = 1;
                 FragmentTransaction ft = fm.beginTransaction();
                 for (SupportFragment to : fragments){
-                    bindFragmentOptions(to,containerId,false);
+                    bindFragmentOptions(to,containerId,false,false);
                     to.setFragmentAnimation(null);
                     ft.add(containerId,to);
                     if (position == showPosition){
@@ -154,12 +161,12 @@ public class SupportTransaction {
         });
     }
 
-    void start(final SupportFragment from, final SupportFragment to){
+    void start(final SupportFragment from, final SupportFragment to,final boolean addToBackStack){
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                bindFragmentOptions(to,from.getContainerId(),true);
+                bindFragmentOptions(to,from.getContainerId(),true,addToBackStack);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.add(to.getContainerId(),to);
@@ -174,6 +181,7 @@ public class SupportTransaction {
             @Override
             public long run() {
                 SupportFragment remove = FragmentUtils.getLastFragment(fm);
+                onResult(remove);
                 if (remove == null) return 0;
                 long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -181,6 +189,11 @@ public class SupportTransaction {
                 ft.remove(remove);
                 supportCommit(ft);
                 return duration;
+            }
+
+            @Override
+            public int actionType() {
+                return Action.TYPE_POP;
             }
         });
     }
@@ -190,7 +203,7 @@ public class SupportTransaction {
             @Override
             public long run() {
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                bindFragmentOptions(to,from.getContainerId(),true);
+                bindFragmentOptions(to,from.getContainerId(),true,true);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.add(to.getContainerId(),to);
@@ -244,6 +257,41 @@ public class SupportTransaction {
                 supportCommit(ft);
                 return 0;
             }
+
+            @Override
+            public int actionType() {
+                return Action.TYPE_POP;
+            }
         });
+    }
+
+    void startForResult(SupportFragment from, SupportFragment to, int requestCode){
+        Bundle formBundle = getArguments(from);
+        formBundle.putInt(FRAGMENTATION_REQUEST_CODE,requestCode);
+        Bundle toBundle = getArguments(to);
+        toBundle.putInt(FRAGMENTATION_FROM_REQUEST_CODE,requestCode);
+        start(from, to,true);
+    }
+
+    void setResult(SupportFragment target, int resultCode, Bundle data){
+        Bundle bundle = getArguments(target);
+        bundle.putInt(FRAGMENTATION_RESULT_CODE,resultCode);
+        bundle.putBundle(FRAGMENTATION_RESULT_DATA,data);
+    }
+
+    void onResult(SupportFragment target){
+        if (target == null) return;
+        Bundle bundle = getArguments(target);
+        int fromRequestCode = bundle.getInt(FRAGMENTATION_FROM_REQUEST_CODE,-1);
+        int resultCode = bundle.getInt(FRAGMENTATION_RESULT_CODE,-1);
+        if (resultCode == -1 || fromRequestCode == -1) return;
+        Bundle data = bundle.getBundle(FRAGMENTATION_RESULT_DATA);
+        if (target.getFragmentManager() == null) return;
+        List<SupportFragment> list = FragmentUtils.getActiveList(target.getFragmentManager());
+        for (SupportFragment f : list){
+            if (getArguments(f).getInt(FRAGMENTATION_REQUEST_CODE) == fromRequestCode){
+                f.onResult(fromRequestCode,resultCode,data);
+            }
+        }
     }
 }

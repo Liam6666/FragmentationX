@@ -52,7 +52,7 @@ public class SettingsFragment extends SupportFragment {
                 }
             }
         });
-        return rootView;
+        return attachSwipeBack(rootView);
     }
 
 //    @Override

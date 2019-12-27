@@ -1,7 +1,5 @@
 package me.liam.support;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import me.liam.anim.FragmentAnimation;
 
 public interface ISupportActivity {
@@ -12,7 +10,7 @@ public interface ISupportActivity {
 
     public <T extends SupportFragment> T findFragmentByClass(Class cls);
 
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim);
+    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
 
     public void loadRootFragment(int containerId, SupportFragment to);
 
@@ -22,7 +20,11 @@ public interface ISupportActivity {
 
     public void start(SupportFragment to);
 
+    public void start(SupportFragment to, boolean addToBackStack);
+
     public void start(SupportFragment from, SupportFragment to);
+
+    public void start(SupportFragment from, SupportFragment to,boolean addToBackStack);
 
     public void startWithPop(SupportFragment from, SupportFragment to);
 

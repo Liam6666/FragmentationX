@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import me.liam.fragmentation.R;
 import me.liam.support.SupportFragment;
+import me.liam.swipeback.SwipeBackLayout;
 
 public class Fragment1 extends SupportFragment {
 
@@ -36,6 +37,7 @@ public class Fragment1 extends SupportFragment {
                 start(Fragment2.newInstance());
             }
         });
-        return rootView;
+
+        return attachSwipeBack(rootView);
     }
 }

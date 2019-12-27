@@ -1,5 +1,6 @@
 package me.liam.support;
 
+import android.os.Bundle;
 import android.view.animation.Animation;
 
 import me.liam.anim.FragmentAnimation;
@@ -10,13 +11,19 @@ public interface ISupportFragment {
 
     public boolean onBackPressed();
 
-    public boolean onBackPressedChild();
-
     public FragmentAnimation onCreateCustomerAnimation();
 
     public void onEnterAnimEnd();
 
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim);
+    public void onSupportPause();
+
+    public void onSupportResume();
+
+    public void onResult(int requestCode, int resultCode, Bundle data);
+
+    public void setResult(int resultCode, Bundle data);
+
+    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
 
     public void loadRootFragment(int containerId, SupportFragment to);
 
@@ -25,6 +32,10 @@ public interface ISupportFragment {
     public void showHideAllFragment(SupportFragment show);
 
     public void start(SupportFragment to);
+
+    public void start(SupportFragment to, boolean addToBackStack);
+
+    public void startForResult(SupportFragment to, int requestCode);
 
     public void startWithPop(SupportFragment to);
 

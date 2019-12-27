@@ -30,10 +30,10 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getFragments().size() > 1){
-            SupportFragment activeFragment = FragmentUtils.getLastActiveFragment(getSupportFragmentManager());
+            SupportFragment activeFragment = FragmentUtils.getLastAddBackStackFragment(getSupportFragmentManager());
             if (activeFragment != null){
                 if (!activeFragment.dispatcherOnBackPressed()){
-                    ActivityCompat.finishAfterTransition(this);
+                    pop();
                 }
             }
         }else {
@@ -62,13 +62,13 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     }
 
     @Override
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim) {
-        supportTransaction.loadRootFragment(getSupportFragmentManager(),containerId,to,anim,playEnterAnim);
+    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim,boolean addToBackStack) {
+        supportTransaction.loadRootFragment(getSupportFragmentManager(),containerId,to,anim,playEnterAnim,addToBackStack);
     }
 
     @Override
     public void loadRootFragment(int containerId, SupportFragment to) {
-        supportTransaction.loadRootFragment(getSupportFragmentManager(),containerId,to,getDefaultAnimation(),false);
+        supportTransaction.loadRootFragment(getSupportFragmentManager(),containerId,to,getDefaultAnimation(),false,true);
     }
 
     @Override
@@ -83,12 +83,22 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     @Override
     public void start(SupportFragment to) {
-        supportTransaction.start(FragmentUtils.getLastFragment(getSupportFragmentManager()),to);
+        supportTransaction.start(FragmentUtils.getLastFragment(getSupportFragmentManager()),to,true);
+    }
+
+    @Override
+    public void start(SupportFragment to, boolean addToBackStack) {
+        supportTransaction.start(FragmentUtils.getLastFragment(getSupportFragmentManager()),to,addToBackStack);
     }
 
     @Override
     public void start(SupportFragment from, SupportFragment to) {
-        supportTransaction.start(from,to);
+        supportTransaction.start(from,to,true);
+    }
+
+    @Override
+    public void start(SupportFragment from, SupportFragment to, boolean addToBackStack) {
+        supportTransaction.start(from,to,addToBackStack);
     }
 
     @Override
