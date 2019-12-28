@@ -27,6 +27,8 @@ public interface ISupportFragment {
 
     public void setResult(int resultCode, Bundle data);
 
+    public ExtraTransaction getExtraTransaction();
+
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
 
     public void loadRootFragment(int containerId, SupportFragment to);

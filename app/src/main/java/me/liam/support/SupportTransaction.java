@@ -1,26 +1,18 @@
 package me.liam.support;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-
-import com.blankj.utilcode.util.ToastUtils;
 
 import java.util.List;
 import java.util.UUID;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import me.liam.anim.FragmentAnimation;
-import me.liam.anim.NoneAnim;
-import me.liam.fragmentation.R;
 import me.liam.helper.FragmentUtils;
 import me.liam.queue.Action;
 import me.liam.queue.ActionQueue;
@@ -46,6 +38,17 @@ public class SupportTransaction {
     final public static String FRAGMENTATION_FROM_REQUEST_CODE = "Fragmentation:FromRequestCode";
     final public static String FRAGMENTATION_RESULT_CODE = "Fragmentation:ResultCode";
     final public static String FRAGMENTATION_RESULT_DATA = "Fragmentation:ResultData";
+
+    final public static int EXTRA_FT_ACTION_LOAD_ROOT = 1;
+    final public static int EXTRA_FT_ACTION_START = 2;
+    final public static int EXTRA_FT_ACTION_START_WITH_POP = 3;
+    final public static int EXTRA_FT_ACTION_START_WITH_POP_TO = 4;
+    final public static int EXTRA_FT_ACTION_START_FOR_RESULT = 5;
+    final public static int EXTRA_FT_ACTION_POP = 6;
+    final public static int EXTRA_FT_ACTION_POP_CHILD = 7;
+    final public static int EXTRA_FT_ACTION_POP_TO = 8;
+    final public static int EXTRA_FT_ACTION_POP_CHILD_TO = 9;
+    final public static int EXTRA_FT_ACTION_REMOVE = 10;
 
     private ISupportActivity iSupportActivity;
 
@@ -198,7 +201,7 @@ public class SupportTransaction {
                 to.setCallBack(new SupportFragmentCallBack(){
                     @Override
                     public void onEnterAnimEnd() {
-                        silencePop(from.getFragmentManager(),from);
+                        silenceRemove(from.getFragmentManager(),from);
                     }
                 });
                 return 0;
@@ -206,7 +209,7 @@ public class SupportTransaction {
         });
     }
 
-    void silencePop(final FragmentManager fm, final SupportFragment... removes){
+    void silenceRemove(final FragmentManager fm, final SupportFragment... removes){
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
@@ -296,6 +299,11 @@ public class SupportTransaction {
                 supportCommit(ft);
                 return 0;
             }
+
+            @Override
+            public int actionType() {
+                return Action.TYPE_POP;
+            }
         });
     }
 
@@ -318,5 +326,141 @@ public class SupportTransaction {
                 return Action.TYPE_POP;
             }
         });
+    }
+
+    void startWithPopTo(final SupportFragment from, final SupportFragment to,final Class cls, final boolean includeTarget){
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                bindFragmentOptions(to,from.getContainerId(),true,true);
+                to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to);
+                supportCommit(ft);
+                to.setCallBack(new SupportFragmentCallBack(){
+                    @Override
+                    public void onEnterAnimEnd() {
+                        popTo(from.getFragmentManager(),cls,includeTarget);
+                    }
+                });
+                return 0;
+            }
+
+            @Override
+            public int actionType() {
+                return Action.TYPE_POP;
+            }
+        });
+    }
+
+    private void popTo(final FragmentManager fm ,final FragmentTransaction ft, final Class cls, final boolean includeTarget){
+        SupportFragment remove = FragmentUtils.getLastFragment(fm);
+        SupportFragment target = FragmentUtils.findFragmentByClass(fm,cls);
+        if (remove == null || target == null) return;
+        int targetIndex = fm.getFragments().indexOf(target);
+        int removeIndex = fm.getFragments().indexOf(remove);
+        List<Fragment> removeList = fm.getFragments().subList(targetIndex,removeIndex);
+        if (!includeTarget){
+            removeList.remove(target);
+        }
+        for (Fragment f : removeList){
+            if (f instanceof SupportFragment){
+                ft.remove(f);
+            }
+        }
+        ft.remove(remove);
+    }
+
+    void doExtraTransaction(final SupportFragment from, SupportFragment to, final TransactionRecord record, int action){
+        if (from == null || from.getFragmentManager() == null) return;
+        final FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+        Bundle args = getArguments(to);
+        to.setFragmentAnimation(record.fragmentAnimation);
+        args.putInt(FRAGMENTATION_CONTAINER_ID, from.getContainerId());
+        args.putString(FRAGMENTATION_TAG, record.tag);
+        args.putString(FRAGMENTATION_SIMPLE_NAME, to.getClass().getSimpleName());
+        args.putString(FRAGMENTATION_FULL_NAME, to.getClass().getName());
+        args.putBoolean(FRAGMENTATION_PLAY_ENTER_ANIM, record.displayEnterAnim);
+        args.putBoolean(FRAGMENTATION_INIT_LIST, false);
+        args.putBoolean(FRAGMENTATION_SAVED_INSTANCE,false);
+        args.putBoolean(FRAGMENTATION_BACK_STACK, record.addBackStack);
+        if (record.show != null){
+            for (SupportFragment s : record.show){
+                ft.show(s);
+            }
+        }
+        if (record.hide != null){
+            for (SupportFragment s : record.hide){
+                ft.hide(s);
+            }
+        }
+        if (record.requestCode != -1){
+            Bundle formBundle = getArguments(from);
+            formBundle.putInt(FRAGMENTATION_REQUEST_CODE,record.requestCode);
+            Bundle toBundle = getArguments(to);
+            toBundle.putInt(FRAGMENTATION_FROM_REQUEST_CODE,record.requestCode);
+        }
+        switch (action){
+            case EXTRA_FT_ACTION_LOAD_ROOT:
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to,record.tag);
+                break;
+            case EXTRA_FT_ACTION_START:
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to,record.tag);
+                break;
+            case EXTRA_FT_ACTION_START_WITH_POP:
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to,record.tag);
+                to.setCallBack(new SupportFragmentCallBack(){
+                    @Override
+                    public void onEnterAnimEnd() {
+                        silenceRemove(from.getFragmentManager(),from);
+                    }
+                });
+                break;
+            case EXTRA_FT_ACTION_START_WITH_POP_TO:
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to,record.tag);
+                to.setCallBack(new SupportFragmentCallBack(){
+                    @Override
+                    public void onEnterAnimEnd() {
+                        popTo(from.getFragmentManager(),ft,record.popToCls,record.includeTarget);
+                    }
+                });
+                break;
+            case EXTRA_FT_ACTION_START_FOR_RESULT:
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.add(to.getContainerId(),to,record.tag);
+                setResult(from,record.resultCode,record.resultData);
+                break;
+            case EXTRA_FT_ACTION_POP:
+                SupportFragment remove = FragmentUtils.getLastFragment(from.getFragmentManager());
+                onResult(remove);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                ft.remove(remove);
+                break;
+            case EXTRA_FT_ACTION_POP_CHILD:
+                SupportFragment removeChild = FragmentUtils.getLastFragment(from.getChildFragmentManager());
+                onResult(removeChild);
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                ft.remove(removeChild);
+                break;
+            case EXTRA_FT_ACTION_POP_TO:
+                popTo(from.getFragmentManager(),ft,record.popToCls,record.includeTarget);
+                break;
+            case EXTRA_FT_ACTION_POP_CHILD_TO:
+                popTo(from.getChildFragmentManager(),ft,record.popToCls,record.includeTarget);
+                break;
+            case EXTRA_FT_ACTION_REMOVE:
+                if (record.removeAnim){
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                }
+                ft.remove(record.remove);
+                break;
+        }
+        supportCommit(ft,record.runOnExecute);
+
     }
 }

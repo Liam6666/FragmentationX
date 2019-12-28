@@ -33,7 +33,9 @@ public class Fragment2 extends SupportFragment {
             @Override
             public void onClick(View v) {
                 ToastUtils.showShort("start fragment");
-                start(Fragment3.newInstance());
+//                start(Fragment3.newInstance());
+                getExtraTransaction()
+                        .startWithPopTo(Fragment3.newInstance(),Fragment1.class,true);
             }
         });
         return attachSwipeBack(rootView);

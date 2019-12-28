@@ -240,6 +240,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     @Override
+    public ExtraTransaction getExtraTransaction() {
+        return new ExtraTransaction.ExtraTransactionImpl(((SupportActivity)getActivity()).getSupportTransaction(),this);
+    }
+
+    @Override
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack) {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()

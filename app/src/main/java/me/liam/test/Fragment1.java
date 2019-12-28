@@ -37,7 +37,6 @@ public class Fragment1 extends SupportFragment {
                 start(Fragment2.newInstance());
             }
         });
-
         return attachSwipeBack(rootView);
     }
 }
