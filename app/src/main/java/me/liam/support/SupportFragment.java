@@ -338,6 +338,13 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popTo(getChildFragmentManager(),cls,includeTarget);
     }
 
+    @Override
+    public void popAllChild() {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .popAll(getChildFragmentManager());
+    }
+
 
     public Handler getHandler() {
         if (handler == null){
@@ -362,7 +369,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
             public void onContentViewSwipedBack() {
                 ((SupportActivity)getActivity())
                         .getSupportTransaction()
-                        .swipePop(current);
+                        .remove(current,false);
             }
 
             @Override

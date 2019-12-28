@@ -54,4 +54,6 @@ public interface ISupportFragment {
     public void popChildTo(Class cls);
 
     public void popChildTo(Class cls, boolean includeTarget);
+
+    public void popAllChild();
 }

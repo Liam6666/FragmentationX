@@ -62,20 +62,6 @@ public class SupportTransaction {
 
     }
 
-    void onBackPressed(FragmentManager fm) {
-        if (fm.getFragments().size() > 1){
-            pop(fm);
-        }else {
-            actionQueue.enqueue(new Action() {
-                @Override
-                public long run() {
-                    ActivityCompat.finishAfterTransition(supportActivity);
-                    return 0;
-                }
-            });
-        }
-    }
-
     public Bundle getArguments(SupportFragment target){
         if (target.getArguments() == null){
             target.setArguments(new Bundle());
@@ -296,12 +282,32 @@ public class SupportTransaction {
         }
     }
 
-    void swipePop(final SupportFragment remove){
-        if (remove == null || remove.isRemoving() || remove.isDetached() || remove.getFragmentManager() == null) return;
+    void popAll(final FragmentManager fm){
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                for (Fragment f : fm.getFragments()){
+                    if (f instanceof SupportFragment && !f.isRemoving() && !f.isDetached()){
+                        ft.remove(f);
+                    }
+                }
+                supportCommit(ft);
+                return 0;
+            }
+        });
+    }
+
+    void remove(final SupportFragment remove, final boolean anim){
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                if (remove == null || remove.getFragmentManager() == null) return 0;
                 FragmentTransaction ft = remove.getFragmentManager().beginTransaction();
+                if (anim){
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                }
                 ft.remove(remove);
                 supportCommit(ft);
                 return 0;
