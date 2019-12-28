@@ -176,6 +176,7 @@ public class SupportTransaction {
         });
     }
 
+
     void pop(final FragmentManager fm){
         actionQueue.enqueue(new Action() {
             @Override
@@ -293,5 +294,23 @@ public class SupportTransaction {
                 f.onResult(fromRequestCode,resultCode,data);
             }
         }
+    }
+
+    void swipePop(final SupportFragment remove){
+        if (remove == null || remove.isRemoving() || remove.isDetached() || remove.getFragmentManager() == null) return;
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                FragmentTransaction ft = remove.getFragmentManager().beginTransaction();
+                ft.remove(remove);
+                supportCommit(ft);
+                return 0;
+            }
+
+            @Override
+            public int actionType() {
+                return Action.TYPE_POP;
+            }
+        });
     }
 }

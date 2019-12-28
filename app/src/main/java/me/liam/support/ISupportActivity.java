@@ -1,5 +1,7 @@
 package me.liam.support;
 
+import android.os.Bundle;
+
 import me.liam.anim.FragmentAnimation;
 
 public interface ISupportActivity {
@@ -9,6 +11,8 @@ public interface ISupportActivity {
     public FragmentAnimation getDefaultAnimation();
 
     public <T extends SupportFragment> T findFragmentByClass(Class cls);
+
+    public void postDataToFragments(int code, Bundle data);
 
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
 

@@ -4,17 +4,22 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
+
+import com.blankj.utilcode.util.ToastUtils;
+
 import me.liam.anim.FragmentAnimation;
 import me.liam.anim.NoneAnim;
 import me.liam.fragmentation.R;
@@ -208,7 +213,22 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     @Override
+    public void onSwipeDrag(SupportFragment beforeOne, int state, float scrollPercent) {
+        if (beforeOne == null || beforeOne.getView() == null) return;
+        float startX = -(beforeOne.getView().getWidth() * SwipeBackLayout.DEFAULT_SCROLL_THRESHOLD);
+        beforeOne.getView().setX((1.0f - scrollPercent) * startX);
+        if (state == SwipeBackLayout.STATE_IDLE && scrollPercent == 0){
+            beforeOne.getView().setX(0);
+        }
+    }
+
+    @Override
     public void onResult(int requestCode, int resultCode, Bundle data) {
+
+    }
+
+    @Override
+    public void onNotification(int code, Bundle data) {
 
     }
 
@@ -331,8 +351,46 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     public SwipeBackLayout attachSwipeBack(View v){
+        final SupportFragment current = this;
         swipeBackLayout = new SwipeBackLayout(getContext());
         swipeBackLayout.setContentView(v);
+        swipeBackLayout.addSwipeListener(new SwipeBackLayout.SwipeListenerEx() {
+
+            SupportFragment before = null;
+
+            @Override
+            public void onContentViewSwipedBack() {
+                ((SupportActivity)getActivity())
+                        .getSupportTransaction()
+                        .swipePop(current);
+            }
+
+            @Override
+            public void onScrollStateChange(int state, float scrollPercent) {
+                if (state == SwipeBackLayout.STATE_IDLE && scrollPercent == 0){
+                    //Swipe back layout is Closed
+                    if (before != null){
+                        before.onSupportPause();
+                    }
+                }
+                if (before != null){
+                    onSwipeDrag(before,state,scrollPercent);
+                }
+            }
+
+            @Override
+            public void onEdgeTouch(int edgeFlag) {
+                before = FragmentUtils.getBeforeOne(FragmentUtils.getActiveList(getFragmentManager()),current);
+                if (before != null){
+                    before.onSupportResume();
+                }
+            }
+
+            @Override
+            public void onScrollOverThreshold() {
+
+            }
+        });
         return swipeBackLayout;
     }
 }

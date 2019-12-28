@@ -62,6 +62,11 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     }
 
     @Override
+    public void postDataToFragments(int code, Bundle data) {
+
+    }
+
+    @Override
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim,boolean addToBackStack) {
         supportTransaction.loadRootFragment(getSupportFragmentManager(),containerId,to,anim,playEnterAnim,addToBackStack);
     }

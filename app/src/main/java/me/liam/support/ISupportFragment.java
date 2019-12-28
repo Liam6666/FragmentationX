@@ -19,7 +19,11 @@ public interface ISupportFragment {
 
     public void onSupportResume();
 
+    public void onSwipeDrag(SupportFragment beforeOne,int state, float scrollPercent);
+
     public void onResult(int requestCode, int resultCode, Bundle data);
+
+    public void onNotification(int code, Bundle data);
 
     public void setResult(int resultCode, Bundle data);
 

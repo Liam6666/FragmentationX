@@ -120,4 +120,14 @@ public class FragmentUtils {
             return null;
         }
     }
+
+    public static SupportFragment getBeforeOne(List<SupportFragment> list, SupportFragment who){
+        if (list == null || list.isEmpty() || who == null) return null;
+        int index = list.indexOf(who);
+        if (index == -1) return null;
+        for (int i = index - 1; i >= 0; i --) {
+            return list.get(i);
+        }
+        return null;
+    }
 }

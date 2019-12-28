@@ -33,6 +33,7 @@ public class Fragment3 extends SupportFragment {
                 loadRootFragment(R.id.container,SettingsFragment.newInstance());
             }
         });
+        loadRootFragment(R.id.container,SettingsFragment.newInstance());
         return attachSwipeBack(rootView);
     }
 }
