@@ -1,79 +1,14 @@
-    ------------------------ In Support Activity APIs -----------------------------
-        
-    public void setDefaultAnimation(FragmentAnimation animation);
 
-    public FragmentAnimation getDefaultAnimation();
-
-    public <T extends SupportFragment> T findFragmentByClass(Class cls);
-
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim);
-
-    public void loadRootFragment(int containerId, SupportFragment to);
-
-    public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments);
-
-    public void showHideAllFragment(SupportFragment show);
-
-    public void start(SupportFragment to);
-
-    public void start(SupportFragment from, SupportFragment to);
-
-    public void startWithPop(SupportFragment from, SupportFragment to);
-
-    public void pop();
-
-    public void popTo(Class cls);
-
-    public void popTo(Class cls, boolean includeTarget);
+    这个库与 YoKeyword/Fragmentation 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
+    FragmentationX，是我为这个库起的新名字，因为适配了Android X，所以干脆就叫FragmentationX吧！
     
-    ------------------------ In Support Fragment APIs -----------------------------
+    这是一个文档草稿，后续放出Release 版本之后我会认真写一份API的文档，大家可以在Issues里提出意见或建议，一起让这个库变得更加优秀。
     
-    public boolean dispatcherOnBackPressed();
-
-    public boolean onBackPressed();
-
-    public boolean onBackPressedChild();
-
-    public FragmentAnimation onCreateCustomerAnimation();
-
-    public void onEnterAnimEnd();
-
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim);
-
-    public void loadRootFragment(int containerId, SupportFragment to);
-
-    public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments);
-
-    public void showHideAllFragment(SupportFragment show);
-
-    public void start(SupportFragment to);
-
-    public void startWithPop(SupportFragment to);
-
-    public void pop();
-
-    public void popTo(Class cls);
-
-    public void popTo(Class cls, boolean includeTarget);
-
-    public void popChild();
-
-    public void popChildTo(Class cls);
-
-    public void popChildTo(Class cls, boolean includeTarget);
- 
+    
  
     ------------------------ In Develop -----------------------------
     
-    attachSwipebackLayout
-    
-    startForResult
-    
-    setResule
-    
     debugMode
-    
-    onVisibleChange
     
     and more functions in develop, welcome make 'star' and follow up me
     
