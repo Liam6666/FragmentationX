@@ -147,6 +147,10 @@
     
     debugMode
     
+    demo App
+    
+    fix know bugs
+    
     and more functions in develop, welcome make 'star' and follow up me
     
     Thanks for https://github.com/YoKeyword/Fragmentation [DEPRECATED] 
