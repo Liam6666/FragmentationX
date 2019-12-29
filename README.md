@@ -92,6 +92,8 @@
 
     public void popChildTo(Class cls, boolean includeTarget);
     
+    public SwipeBackLayout attachSwipeBack(View v)；
+    
     ------------------------ In Extra Transaction APIS -----------------------------
     
     public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim);
