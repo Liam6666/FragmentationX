@@ -241,7 +241,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     @Override
     public ExtraTransaction getExtraTransaction() {
-        return new ExtraTransaction.ExtraTransactionImpl(((SupportActivity)getActivity()).getSupportTransaction(),this);
+        return new ExtraTransaction.ExtraTransactionImpl(this,getHandler());
     }
 
     @Override
