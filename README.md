@@ -10,7 +10,7 @@
     
     ------------------------ In Support Activity APIS -----------------------------
     
-     public void setDefaultAnimation(FragmentAnimation animation);
+    public void setDefaultAnimation(FragmentAnimation animation);
 
     public FragmentAnimation getDefaultAnimation();
 
@@ -91,6 +91,55 @@
     public void popChildTo(Class cls);
 
     public void popChildTo(Class cls, boolean includeTarget);
+    
+    ------------------------ In Extra Transaction APIS -----------------------------
+    
+    public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim);
+
+    public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim);
+
+    public abstract ExtraTransaction setResult(int resultCode, Bundle data);
+
+    public abstract ExtraTransaction displayEnterAnim(boolean displayEnterAnim);
+
+    public abstract ExtraTransaction setTag(String tag);
+
+    public abstract ExtraTransaction addBackStack(boolean addBackStack);
+
+    public abstract ExtraTransaction show(SupportFragment... show);
+
+    public abstract ExtraTransaction hide(SupportFragment... hide);
+
+    public abstract ExtraTransaction runOnExecute(Runnable run);
+
+    public abstract void loadRootFragment(int containerId, SupportFragment to);
+
+    public abstract void start(SupportFragment to);
+
+    public abstract void startWithPop(SupportFragment to);
+
+    public abstract void startWithPopTo(SupportFragment to, Class popToCls);
+
+    public abstract void startWithPopTo(SupportFragment to, Class popToCls,boolean includeTarget);
+
+    public abstract void startForResult(SupportFragment to,int requestCode);
+
+    public abstract void pop();
+
+    public abstract void popChild();
+
+    public abstract void popTo(Class popToCls);
+
+    public abstract void popTo(Class popToCls,boolean includeTarget);
+
+    public abstract void popChildTo(Class popToCls);
+
+    public abstract void popChildTo(Class popToCls,boolean includeTarget);
+
+    public abstract void remove(SupportFragment remove);
+
+    public abstract void remove(SupportFragment remove, boolean anim);
+
  
     ------------------------ In Develop -----------------------------
     
