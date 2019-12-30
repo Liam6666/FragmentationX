@@ -19,7 +19,7 @@ public interface ISupportFragment {
 
     public void onSupportResume();
 
-    public void onSwipeDrag(SupportFragment beforeOne,int state, float scrollPercent);
+    public void onSwipeDrag(SupportFragment beforeOne, int state, float scrollPercent);
 
     public void onResult(int requestCode, int resultCode, Bundle data);
 
@@ -45,9 +45,9 @@ public interface ISupportFragment {
 
     public void startWithPop(SupportFragment to);
 
-    public void startWithPopTo(SupportFragment to,Class cls);
+    public void startWithPopTo(SupportFragment to, Class cls);
 
-    public void startWithPopTo(SupportFragment to,Class cls,boolean includeTarget);
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
 
     public void pop();
 

@@ -28,19 +28,19 @@ public interface ISupportActivity {
 
     public void start(SupportFragment from, SupportFragment to);
 
-    public void start(SupportFragment from, SupportFragment to,boolean addToBackStack);
+    public void start(SupportFragment from, SupportFragment to, boolean addToBackStack);
 
     public void startWithPop(SupportFragment to);
 
     public void startWithPop(SupportFragment from, SupportFragment to);
 
-    public void startWithPopTo(SupportFragment to,Class cls);
+    public void startWithPopTo(SupportFragment to, Class cls);
 
-    public void startWithPopTo(SupportFragment to,Class cls,boolean includeTarget);
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
 
-    public void startWithPopTo(SupportFragment from, SupportFragment to,Class cls);
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls);
 
-    public void startWithPopTo(SupportFragment from, SupportFragment to,Class cls, boolean includeTarget);
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls, boolean includeTarget);
 
     public void pop();
 
