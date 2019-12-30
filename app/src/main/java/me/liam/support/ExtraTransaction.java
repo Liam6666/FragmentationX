@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
-import java.util.UUID;
 
 import me.liam.anim.FragmentAnimation;
 import me.liam.fragmentation.R;
@@ -31,13 +30,13 @@ public abstract class ExtraTransaction {
 
     public abstract ExtraTransaction addBackStack(boolean addBackStack);
 
-    public abstract ExtraTransaction show(SupportFragment... show);
-
-    public abstract ExtraTransaction hide(SupportFragment... hide);
-
     public abstract ExtraTransaction runOnExecute(Runnable run);
 
     public abstract void loadRootFragment(int containerId, SupportFragment to);
+
+    public abstract void show(SupportFragment... show);
+
+    public abstract void hide(SupportFragment... hide);
 
     public abstract void start(SupportFragment to);
 
@@ -64,6 +63,8 @@ public abstract class ExtraTransaction {
     public abstract void remove(SupportFragment remove);
 
     public abstract void remove(SupportFragment remove, boolean anim);
+
+    public abstract void remove(SupportFragment... remove);
 
     static class ExtraTransactionImpl extends ExtraTransaction {
 
@@ -117,17 +118,6 @@ public abstract class ExtraTransaction {
             return this;
         }
 
-        @Override
-        public ExtraTransaction show(SupportFragment... show) {
-            record.show = show;
-            return this;
-        }
-
-        @Override
-        public ExtraTransaction hide(SupportFragment... hide) {
-            record.hide = hide;
-            return this;
-        }
 
         @Override
         public ExtraTransaction runOnExecute(Runnable run) {
@@ -143,9 +133,38 @@ public abstract class ExtraTransaction {
                     bindFragmentOptions(to,containerId,record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getChildFragmentManager().beginTransaction();
-                    showHide(ft);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.add(containerId,to,record.tag);
+                    supportCommit(ft,record.runOnExecute);
+                    return 0;
+                }
+            });
+        }
+
+        @Override
+        public void show(final SupportFragment... show) {
+            actionQueue.enqueue(new Action() {
+                @Override
+                public long run() {
+                    FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                    for (SupportFragment f : show){
+                        ft.show(f);
+                    }
+                    supportCommit(ft,record.runOnExecute);
+                    return 0;
+                }
+            });
+        }
+
+        @Override
+        public void hide(final SupportFragment... hide) {
+            actionQueue.enqueue(new Action() {
+                @Override
+                public long run() {
+                    FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                    for (SupportFragment f : hide){
+                        ft.hide(f);
+                    }
                     supportCommit(ft,record.runOnExecute);
                     return 0;
                 }
@@ -160,7 +179,6 @@ public abstract class ExtraTransaction {
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                    showHide(ft);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.add(from.getContainerId(),to,record.tag);
                     supportCommit(ft,record.runOnExecute);
@@ -177,7 +195,6 @@ public abstract class ExtraTransaction {
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                    showHide(ft);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.add(from.getContainerId(),to,record.tag);
                     supportCommit(ft,record.runOnExecute);
@@ -187,7 +204,6 @@ public abstract class ExtraTransaction {
                             FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                             ft.remove(from);
                             supportCommit(ft);
-
                         }
                     });
                     return 0;
@@ -197,7 +213,7 @@ public abstract class ExtraTransaction {
 
         @Override
         public void startWithPopTo(SupportFragment to, Class popToCls) {
-            startWithPopTo(to,popToCls);
+            startWithPopTo(to,popToCls,true);
         }
 
         @Override
@@ -210,7 +226,6 @@ public abstract class ExtraTransaction {
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-                    showHide(ft);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.add(from.getContainerId(),to,record.tag);
                     supportCommit(ft,record.runOnExecute);
@@ -355,17 +370,13 @@ public abstract class ExtraTransaction {
             });
         }
 
-        void showHide(FragmentTransaction ft){
-            if (record.show != null){
-                for (SupportFragment f : record.show){
-                    ft.show(f);
-                }
+        @Override
+        public void remove(SupportFragment... remove) {
+            FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+            for (SupportFragment f : remove){
+                ft.remove(f);
             }
-            if (record.hide != null){
-                for (SupportFragment f : record.hide){
-                    ft.hide(f);
-                }
-            }
+            supportCommit(ft,record.runOnExecute);
         }
 
         Bundle getArguments(SupportFragment target){

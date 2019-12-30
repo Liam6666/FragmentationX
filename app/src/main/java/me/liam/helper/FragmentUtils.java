@@ -38,8 +38,7 @@ public class FragmentUtils {
         for (Fragment f: fm.getFragments()){
             if (f instanceof SupportFragment && !f.isRemoving() && !f.isDetached()){
                 list.add((SupportFragment) f);
-                if (f.getChildFragmentManager().getFragments() != null
-                        && f.getChildFragmentManager().getFragments().size() != 0){
+                if (f.getChildFragmentManager().getFragments().size() != 0){
                     getAllFragments(list,f.getChildFragmentManager());
                 }
             }

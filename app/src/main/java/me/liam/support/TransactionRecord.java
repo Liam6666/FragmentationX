@@ -23,10 +23,6 @@ class TransactionRecord {
 
     boolean addBackStack = true;
 
-    SupportFragment[] show;
-
-    SupportFragment[] hide;
-
     Runnable runOnExecute;
 
     Class popToCls;

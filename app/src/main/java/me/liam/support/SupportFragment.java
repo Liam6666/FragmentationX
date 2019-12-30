@@ -4,21 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Lifecycle;
-
-import com.blankj.utilcode.util.ToastUtils;
 
 import me.liam.anim.FragmentAnimation;
 import me.liam.anim.NoneAnim;
@@ -299,6 +294,20 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()
                 .startWithPop(this,to);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment to, Class cls) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .startWithPopTo(this,to,cls,true);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .startWithPopTo(this,to,cls,includeTarget);
     }
 
     @Override

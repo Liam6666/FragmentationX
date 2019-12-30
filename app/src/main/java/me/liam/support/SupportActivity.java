@@ -8,11 +8,8 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import me.liam.anim.DefaultAnimation;
 import me.liam.anim.FragmentAnimation;
-import me.liam.anim.NoneAnim;
 import me.liam.helper.FragmentUtils;
 
 public class SupportActivity extends AppCompatActivity implements ISupportActivity {
@@ -107,8 +104,33 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     }
 
     @Override
+    public void startWithPop(SupportFragment to) {
+        supportTransaction.startWithPop(FragmentUtils.getLastFragment(getSupportFragmentManager()), to);
+    }
+
+    @Override
     public void startWithPop(SupportFragment from, SupportFragment to) {
         supportTransaction.startWithPop(from, to);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment to, Class cls) {
+        supportTransaction.startWithPopTo(FragmentUtils.getLastFragment(getSupportFragmentManager()),to,cls,true);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget) {
+        supportTransaction.startWithPopTo(FragmentUtils.getLastFragment(getSupportFragmentManager()),to,cls,includeTarget);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls) {
+        supportTransaction.startWithPopTo(from,to,cls,true);
+    }
+
+    @Override
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls, boolean includeTarget) {
+        supportTransaction.startWithPopTo(from,to,cls,includeTarget);
     }
 
     @Override
