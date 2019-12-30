@@ -1,1 +1,1 @@
-include ':demo', ':FragmentationX_core'
+include ':demo', ':core'
