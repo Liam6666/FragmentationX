@@ -8,7 +8,7 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import me.liam.anim.DefaultAnimation;
+import me.liam.anim.ClassicHorizontalAnim;
 import me.liam.anim.FragmentAnimation;
 import me.liam.helper.FragmentUtils;
 
@@ -16,7 +16,7 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     private SupportTransaction supportTransaction;
 
-    private FragmentAnimation defaultAnimation = new DefaultAnimation();
+    private FragmentAnimation defaultAnimation = new ClassicHorizontalAnim();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +60,11 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     @Override
     public void postDataToFragments(int code, Bundle data) {
-
+        List<SupportFragment> fragmentList = new ArrayList<>();
+        FragmentUtils.getAllFragments(fragmentList,getSupportFragmentManager());
+        for (SupportFragment f : fragmentList){
+            f.onPostedData(code,data);
+        }
     }
 
     @Override

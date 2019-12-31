@@ -171,6 +171,16 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     @Override
+    public <T extends SupportFragment> T findFragmentByClass(Class cls) {
+        return FragmentUtils.findFragmentByClass(getFragmentManager(),cls);
+    }
+
+    @Override
+    public <T extends SupportFragment> T findChildFragmentByClass(Class cls) {
+        return FragmentUtils.findFragmentByClass(getChildFragmentManager(),cls);
+    }
+
+    @Override
     public boolean dispatcherOnBackPressed() {
         if (getChildFragmentManager().getFragments().size() > 0){
             SupportFragment lastActive = FragmentUtils.getLastAddBackStackFragment(getChildFragmentManager());
@@ -223,7 +233,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     @Override
-    public void onNotification(int code, Bundle data) {
+    public void onPostedData(int code, Bundle data) {
 
     }
 

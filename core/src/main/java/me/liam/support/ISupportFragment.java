@@ -7,6 +7,10 @@ import me.liam.anim.FragmentAnimation;
 
 public interface ISupportFragment {
 
+    public <T extends SupportFragment> T findFragmentByClass(Class cls);
+
+    public <T extends SupportFragment> T findChildFragmentByClass(Class cls);
+
     public boolean dispatcherOnBackPressed();
 
     public boolean onBackPressed();
@@ -23,7 +27,7 @@ public interface ISupportFragment {
 
     public void onResult(int requestCode, int resultCode, Bundle data);
 
-    public void onNotification(int code, Bundle data);
+    public void onPostedData(int code, Bundle data);
 
     public void setResult(int resultCode, Bundle data);
 

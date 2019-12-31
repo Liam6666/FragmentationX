@@ -4,40 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <FrameLayout
+    <TextView
+        android:padding="20dp"
+        android:textColor="#333333"
+        android:textSize="15sp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/container"/>
-    <LinearLayout
+        android:layout_height="wrap_content"
+        android:text="FragmentationX，致力于打造一个方便易用的Fragment框架，方便实现单Activity + 多Fragment的单页面构架模式，更加轻量化的App。"/>
+    <Button
+        android:id="@+id/btn_weChat"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:background="#853"
-            android:id="@+id/tv1"/>
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="2"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:background="#414"
-            android:id="@+id/tv2"/>
-        <TextView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="3"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:background="#123"
-            android:id="@+id/tv3"/>
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="We Chat App"/>
 </LinearLayout>

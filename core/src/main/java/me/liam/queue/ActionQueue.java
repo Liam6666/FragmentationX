@@ -2,7 +2,6 @@ package me.liam.queue;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,11 +32,11 @@ public class ActionQueue {
         }
         if (!actionQueue.isEmpty()) return;
         actionQueue.add(action);
-        handlerAction(action);
+        handlerAction();
     }
 
 
-    private void handlerAction(final Action action){
+    private void handlerAction(){
         if (actionQueue.size() == 1){
             handler.post(new Runnable() {
                 @Override
