@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import me.liam.fragmentation.R;
+import me.liam.fragmentation.SignleFragment;
 import me.liam.support.SupportFragment;
 
 /**
@@ -28,10 +32,40 @@ public class HomePageFragment extends SupportFragment {
 
     private View rootView;
 
+    private ListView listview;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = View.inflate(getContext(), R.layout.fragment_wechat_home,null);
+        listview = rootView.findViewById(R.id.listview);
+        listview.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return 25;
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                return View.inflate(getContext(),R.layout.item_wechat_home,null);
+            }
+        });
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((SupportFragment)getParentFragment()).start(SignleFragment.newInstance());
+            }
+        });
         return rootView;
     }
 }

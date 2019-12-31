@@ -114,6 +114,7 @@ public class SupportTransaction {
                     }else {
                         ft.hide(to);
                     }
+                    position++;
                 }
                 supportCommit(ft);
                 return 0;
@@ -160,7 +161,7 @@ public class SupportTransaction {
             @Override
             public long run() {
                 SupportFragment remove = FragmentUtils.getLastFragment(fm);
-                onResult(remove);
+//                onResult(remove);
                 if (remove == null) return 0;
                 long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                 FragmentTransaction ft = fm.beginTransaction();

@@ -6,6 +6,8 @@ import me.liam.anim.FragmentAnimation;
 
 public interface ISupportActivity {
 
+    public int getDefaultBackground();
+
     public void setDefaultAnimation(FragmentAnimation animation);
 
     public FragmentAnimation getDefaultAnimation();

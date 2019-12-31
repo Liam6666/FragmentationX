@@ -18,5 +18,5 @@
         </activity>
         <activity android:name="wechat.WeChatActivity"/>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

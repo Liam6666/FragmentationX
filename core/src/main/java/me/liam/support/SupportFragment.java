@@ -33,6 +33,8 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     private SwipeBackLayout swipeBackLayout;
 
+    private int defaultBackgroundColor;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -41,12 +43,26 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         if (animation != null){
             setFragmentAnimation(animation);
         }
+        defaultBackgroundColor = ((SupportActivity)getActivity()).getDefaultBackground();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (swipeBackLayout != null){
+            View rootView = swipeBackLayout.getChildAt(0);
+            if (rootView != null){
+                rootView.setBackgroundColor(defaultBackgroundColor);
+            }
+        }else if (getView() != null){
+            getView().setBackgroundColor(defaultBackgroundColor);
+        }
     }
 
     @Override
@@ -112,6 +128,14 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         super.onSaveInstanceState(outState);
         supportFragmentVisible.onSaveInstanceState(outState);
         getArguments().putBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE,true);
+    }
+
+    @Override
+    public void onDestroyView() {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .onResult(this);
+        super.onDestroyView();
     }
 
     public void onCreatePopAnimations(boolean popEnter){
@@ -183,7 +207,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     @Override
     public boolean dispatcherOnBackPressed() {
         if (getChildFragmentManager().getFragments().size() > 0){
-            SupportFragment lastActive = FragmentUtils.getLastAddBackStackFragment(getChildFragmentManager());
+            SupportFragment lastActive = FragmentUtils.getLastFragment(getChildFragmentManager());
             if (lastActive != null){
                 return lastActive.dispatcherOnBackPressed();
             }
@@ -193,8 +217,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     @Override
     public boolean onBackPressed() {
-        pop();
-        return true;
+        if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK)){
+            pop();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -260,7 +287,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     public void loadRootFragment(int containerId, SupportFragment to) {
         ((SupportActivity)getActivity())
                 .getSupportTransaction()
-                .loadRootFragment(getChildFragmentManager(),containerId,to,null,false,true);
+                .loadRootFragment(getChildFragmentManager(),containerId,to,((SupportActivity)getActivity()).getDefaultAnimation(),false,true);
     }
 
     @Override

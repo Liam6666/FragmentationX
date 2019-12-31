@@ -17,6 +17,12 @@ public class WeChatActivity extends SupportActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wechat_root);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+        if (getActionBar() != null){
+            getActionBar().hide();
+        }
         if (findFragmentByClass(RootFragment.class) == null){
             loadRootFragment(R.id.container,RootFragment.newInstance());
         }

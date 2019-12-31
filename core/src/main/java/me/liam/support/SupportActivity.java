@@ -1,5 +1,6 @@
 package me.liam.support;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -26,16 +27,20 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getFragments().size() > 1){
-            SupportFragment activeFragment = FragmentUtils.getLastAddBackStackFragment(getSupportFragmentManager());
-            if (activeFragment != null){
-                if (!activeFragment.dispatcherOnBackPressed()){
-                    pop();
-                }
-            }
+        SupportFragment activeFragment = FragmentUtils.getLastFragment(getSupportFragmentManager());
+        if (activeFragment != null && activeFragment.dispatcherOnBackPressed()){
+            return;
+        }
+        if (FragmentUtils.getInManagerFragments(getSupportFragmentManager()).size() > 1){
+            pop();
         }else {
             ActivityCompat.finishAfterTransition(this);
         }
+    }
+
+    @Override
+    public int getDefaultBackground() {
+        return Color.WHITE;
     }
 
     @Override

@@ -34,6 +34,8 @@ public class RootFragment extends SupportFragment {
     private BottomNavigationBar bottom_bar;
 
     private HomePageFragment homePageFragment;
+    private ContactsFragment contactsFragment;
+    private MineFragment mineFragment;
 
     @Nullable
     @Override
@@ -49,10 +51,39 @@ public class RootFragment extends SupportFragment {
         bottom_bar.setOnSelectListener(new BottomNavigationBar.OnSelectListener() {
             @Override
             public void onSelect(int position) {
-
+                if (position == 0){
+                    showHideAllFragment(homePageFragment);
+                }
+                if (position == 1){
+                    showHideAllFragment(contactsFragment);
+                }
+                if (position == 2){
+                    showHideAllFragment(mineFragment);
+                }
             }
         });
-
+        if (findChildFragmentByClass(HomePageFragment.class) == null){
+            homePageFragment = HomePageFragment.newInstance();
+            contactsFragment = ContactsFragment.newInstance();
+            mineFragment = MineFragment.newInstance();
+            loadMultipleRootFragments(R.id.container,1,homePageFragment,contactsFragment,mineFragment);
+        }else {
+            homePageFragment = findChildFragmentByClass(HomePageFragment.class);
+            contactsFragment = findChildFragmentByClass(ContactsFragment.class);
+            mineFragment = findChildFragmentByClass(MineFragment.class);
+        }
         return rootView;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+//        return super.onBackPressed();
+        if (!homePageFragment.isVisible()){
+            showHideAllFragment(homePageFragment);
+            return true;
+        }else {
+            getActivity().finish();
+            return true;
+        }
     }
 }

@@ -96,30 +96,6 @@ public class FragmentUtils {
         }
     }
 
-    public static SupportFragment getLastAddBackStackFragment(FragmentManager fm){
-        LinkedList<SupportFragment> linkedList = new LinkedList<>();
-        for (Fragment f : fm.getFragments()){
-            boolean addBackStack = false;
-            if (f.getArguments() != null){
-                addBackStack = f.getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK);
-            }
-            if (f instanceof SupportFragment
-                    && f.isAdded()
-                    && f.isVisible()
-                    && !f.isRemoving()
-                    && !f.isDetached()
-                    && f.isResumed()
-                    && addBackStack){
-                linkedList.add((SupportFragment) f);
-            }
-        }
-        try {
-            return linkedList.getLast();
-        }catch (NoSuchElementException e){
-            return null;
-        }
-    }
-
     public static SupportFragment getBeforeOne(List<SupportFragment> list, SupportFragment who){
         if (list == null || list.isEmpty() || who == null) return null;
         int index = list.indexOf(who);

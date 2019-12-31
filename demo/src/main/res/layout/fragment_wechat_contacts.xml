@@ -8,11 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:title="首页"
+        app:title="联系人"
         app:titleTextColor="#FFFFFF"/>
-    <ListView
-        android:id="@+id/listview"
-        android:divider="@null"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
