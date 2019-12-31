@@ -1,16 +1,14 @@
 
     Beta 版本已经开放测试咯，引入办法：
     
-    1.
-    allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-   }
+    1.allprojects {
+         repositories {
+             maven { url 'https://jitpack.io' }
+         }
+     }
+     
+    2.implementation 'com.github.Liam6666:FragmentationX:1.0.0-beta03'
    
-   2.
-    implementation 'com.github.Liam6666:FragmentationX:1.0.0-beta01'
-    
     这个库与 YoKeyword/Fragmentation 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
     借鉴YoKeyword/Fragmentation的同时呢，我也加入了自己的一些想法，扩展了易用性，代码结构简单，通俗易懂。
     
@@ -22,6 +20,8 @@
     
     ------------------------ In Support Activity APIS -----------------------------
     
+    public int getDefaultBackground();
+
     public void setDefaultAnimation(FragmentAnimation animation);
 
     public FragmentAnimation getDefaultAnimation();
@@ -44,9 +44,19 @@
 
     public void start(SupportFragment from, SupportFragment to);
 
-    public void start(SupportFragment from, SupportFragment to,boolean addToBackStack);
+    public void start(SupportFragment from, SupportFragment to, boolean addToBackStack);
+
+    public void startWithPop(SupportFragment to);
 
     public void startWithPop(SupportFragment from, SupportFragment to);
+
+    public void startWithPopTo(SupportFragment to, Class cls);
+
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
+
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls);
+
+    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls, boolean includeTarget);
 
     public void pop();
 
@@ -56,6 +66,10 @@
         
     ------------------------ In Support Fragment APIS -----------------------------
     
+    public <T extends SupportFragment> T findFragmentByClass(Class cls);
+
+    public <T extends SupportFragment> T findChildFragmentByClass(Class cls);
+
     public boolean dispatcherOnBackPressed();
 
     public boolean onBackPressed();
@@ -68,13 +82,15 @@
 
     public void onSupportResume();
 
-    public void onSwipeDrag(SupportFragment beforeOne,int state, float scrollPercent);
+    public void onSwipeDrag(SupportFragment beforeOne, int state, float scrollPercent);
 
     public void onResult(int requestCode, int resultCode, Bundle data);
 
-    public void onNotification(int code, Bundle data);
+    public void onPostedData(int code, Bundle data);
 
     public void setResult(int resultCode, Bundle data);
+
+    public ExtraTransaction getExtraTransaction();
 
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
 
@@ -92,6 +108,10 @@
 
     public void startWithPop(SupportFragment to);
 
+    public void startWithPopTo(SupportFragment to, Class cls);
+
+    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
+
     public void pop();
 
     public void popTo(Class cls);
@@ -103,6 +123,8 @@
     public void popChildTo(Class cls);
 
     public void popChildTo(Class cls, boolean includeTarget);
+
+    public void popAllChild();
     
     public SwipeBackLayout attachSwipeBack(View v)；
     
