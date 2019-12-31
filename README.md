@@ -1,4 +1,16 @@
 
+    Beta 版本已经开放测试咯，引入办法：
+    
+    1.
+    allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+   }
+   
+   2.
+    implementation 'com.github.Liam6666:FragmentationX:1.0.0-beta01'
+    
     这个库与 YoKeyword/Fragmentation 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
     借鉴YoKeyword/Fragmentation的同时呢，我也加入了自己的一些想法，扩展了易用性，代码结构简单，通俗易懂。
     
