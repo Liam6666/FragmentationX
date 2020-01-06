@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep public class * extends androidx.fragment.app.Fragment
+-keep public class * extends androidx.appcompat.app.AppCompatActivity

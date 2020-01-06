@@ -439,6 +439,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
             @Override
             public void onContentViewSwipedBack() {
+                if (before != null){
+                    onSwipeDrag(before,SwipeBackLayout.STATE_IDLE,0);
+                }
                 ((SupportActivity)getActivity())
                         .getSupportTransaction()
                         .remove(current,false);

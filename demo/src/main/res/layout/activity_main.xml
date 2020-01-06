@@ -16,4 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="We Chat App"/>
+    <Button
+        android:id="@+id/btn_zhihu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ZHI HU App"/>
 </LinearLayout>

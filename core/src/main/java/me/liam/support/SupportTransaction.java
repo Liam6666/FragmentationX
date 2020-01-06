@@ -41,17 +41,11 @@ public class SupportTransaction {
 
     private ISupportActivity iSupportActivity;
 
-    private FragmentActivity supportActivity;
-
     private ActionQueue actionQueue;
-
-//    private Context context;
 
     SupportTransaction(ISupportActivity iSupportActivity) {
         this.iSupportActivity = iSupportActivity;
-        this.supportActivity = (FragmentActivity) iSupportActivity;
         actionQueue = new ActionQueue(new Handler(Looper.myLooper()));
-
     }
 
     public Bundle getArguments(SupportFragment target){

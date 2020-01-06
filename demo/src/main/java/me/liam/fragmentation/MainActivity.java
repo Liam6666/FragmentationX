@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import me.liam.support.SupportActivity;
 import wechat.WeChatActivity;
+import zhihu.ZhiHuActivity;
 
 /**
  * Created by Augustine on 2019/12/30.
@@ -24,6 +25,12 @@ public class MainActivity extends SupportActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,WeChatActivity.class));
+            }
+        });
+        findViewById(R.id.btn_zhihu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ZhiHuActivity.class));
             }
         });
     }

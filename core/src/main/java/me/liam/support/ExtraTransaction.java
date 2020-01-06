@@ -352,6 +352,7 @@ public abstract class ExtraTransaction {
             actionQueue.enqueue(new Action() {
                 @Override
                 public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                     if (anim){
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
@@ -369,12 +370,24 @@ public abstract class ExtraTransaction {
         }
 
         @Override
-        public void remove(SupportFragment... remove) {
-            FragmentTransaction ft = from.getFragmentManager().beginTransaction();
-            for (SupportFragment f : remove){
-                ft.remove(f);
-            }
-            supportCommit(ft,record.runOnExecute);
+        public void remove(final SupportFragment... remove) {
+            actionQueue.enqueue(new Action() {
+                @Override
+                public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
+                    FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                    for (SupportFragment f : remove){
+                        ft.remove(f);
+                    }
+                    supportCommit(ft,record.runOnExecute);
+                    return 0;
+                }
+
+                @Override
+                public int actionType() {
+                    return Action.TYPE_POP;
+                }
+            });
         }
 
         Bundle getArguments(SupportFragment target){

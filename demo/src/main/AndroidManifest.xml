@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name="wechat.WeChatActivity"/>
+        <activity android:name="zhihu.ZhiHuActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
