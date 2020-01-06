@@ -144,6 +144,7 @@ public class SupportTransaction {
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
+                if (from == null || from.getFragmentManager() == null) return 0;
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                 bindFragmentOptions(to,from.getContainerId(),true,addToBackStack);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
@@ -161,8 +162,7 @@ public class SupportTransaction {
             @Override
             public long run() {
                 SupportFragment remove = FragmentUtils.getLastFragment(fm);
-//                onResult(remove);
-                if (remove == null) return 0;
+                if (remove == null || remove.getFragmentManager() == null) return 0;
                 long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
@@ -182,6 +182,7 @@ public class SupportTransaction {
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
+                if (from == null || from.getFragmentManager() == null) return 0;
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                 bindFragmentOptions(to,from.getContainerId(),true,true);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
@@ -191,6 +192,7 @@ public class SupportTransaction {
                 to.setCallBack(new SupportFragmentCallBack(){
                     @Override
                     public void onEnterAnimEnd() {
+                        if (from.getFragmentManager() == null) return;
                         silenceRemove(from.getFragmentManager(),from);
                     }
                 });
@@ -322,6 +324,7 @@ public class SupportTransaction {
         actionQueue.enqueue(new Action() {
             @Override
             public long run() {
+                if (from == null || from.getFragmentManager() == null) return 0;
                 FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                 bindFragmentOptions(to,from.getContainerId(),true,true);
                 to.setFragmentAnimation(iSupportActivity.getDefaultAnimation());

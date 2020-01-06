@@ -75,6 +75,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         if (isSavedInstance()){
             resumeAnim();
         }
+        if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST)
+                && !isHidden()){
+            onLazyInit(savedInstanceState);
+        }
     }
 
     @Override
@@ -90,6 +94,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         switch (transit){
             case FragmentTransaction.TRANSIT_FRAGMENT_OPEN:
                 if (enter){
+                    ((SupportActivity)getActivity()).fragmentClickable = false;
                     if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM)){
                         animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_empty);
                     }else {
@@ -102,6 +107,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                     getHandler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            ((SupportActivity)getActivity()).fragmentClickable = true;
                             if (callBack != null){
                                 callBack.onEnterAnimEnd();
                             }
@@ -128,6 +134,16 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         super.onSaveInstanceState(outState);
         supportFragmentVisible.onSaveInstanceState(outState);
         getArguments().putBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE,true);
+        getArguments().putBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST,false);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST)
+                && !hidden){
+            onLazyInit(null);
+        }
     }
 
     @Override
@@ -227,6 +243,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     @Override
     public FragmentAnimation onCreateCustomerAnimation() {
         return null;
+    }
+
+    @Override
+    public void onLazyInit(Bundle savedInstanceState) {
+        getArguments().putBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST,true);
     }
 
     @Override

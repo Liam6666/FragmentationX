@@ -1,6 +1,7 @@
 package wechat;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,5 +65,11 @@ public class MineFragment extends SupportFragment {
             ((RootFragment)getParentFragment()).onBackPressed();
             return true;
         }
+    }
+
+    @Override
+    public void onLazyInit(Bundle savedInstanceState) {
+        super.onLazyInit(savedInstanceState);
+        Log.e("MineFragment","onLazyInit");
     }
 }

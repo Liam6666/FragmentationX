@@ -34,4 +34,6 @@ public class ContactsChildAFragment extends SupportFragment {
         rootView = View.inflate(getContext(), R.layout.fragment_wechat_contacts_a,null);
         return rootView;
     }
+
+
 }

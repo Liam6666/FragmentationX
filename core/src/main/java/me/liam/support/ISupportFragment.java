@@ -17,6 +17,8 @@ public interface ISupportFragment {
 
     public FragmentAnimation onCreateCustomerAnimation();
 
+    public void onLazyInit(Bundle savedInstanceState);
+
     public void onEnterAnimEnd();
 
     public void onSupportPause();

@@ -253,7 +253,6 @@ public abstract class ExtraTransaction {
                 @Override
                 public long run() {
                     SupportFragment remove = FragmentUtils.getLastFragment(from.getFragmentManager());
-                    onResult(remove);
                     if (remove == null) return 0;
                     long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
@@ -276,7 +275,6 @@ public abstract class ExtraTransaction {
                 @Override
                 public long run() {
                     SupportFragment remove = FragmentUtils.getLastFragment(from.getChildFragmentManager());
-                    onResult(remove);
                     if (remove == null) return 0;
                     long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
                     FragmentTransaction ft = from.getChildFragmentManager().beginTransaction();
@@ -419,22 +417,6 @@ public abstract class ExtraTransaction {
             Bundle bundle = getArguments(target);
             bundle.putInt(SupportTransaction.FRAGMENTATION_RESULT_CODE,resultCode);
             bundle.putBundle(SupportTransaction.FRAGMENTATION_RESULT_DATA,data);
-        }
-
-        void onResult(SupportFragment target){
-            if (target == null) return;
-            Bundle bundle = getArguments(target);
-            int fromRequestCode = bundle.getInt(SupportTransaction.FRAGMENTATION_FROM_REQUEST_CODE,-1);
-            int resultCode = bundle.getInt(SupportTransaction.FRAGMENTATION_RESULT_CODE,-1);
-            if (resultCode == -1 || fromRequestCode == -1) return;
-            Bundle data = bundle.getBundle(SupportTransaction.FRAGMENTATION_RESULT_DATA);
-            if (target.getFragmentManager() == null) return;
-            List<SupportFragment> list = FragmentUtils.getActiveList(target.getFragmentManager());
-            for (SupportFragment f : list){
-                if (getArguments(f).getInt(SupportTransaction.FRAGMENTATION_REQUEST_CODE) == fromRequestCode){
-                    f.onResult(fromRequestCode,resultCode,data);
-                }
-            }
         }
 
         void popTo(FragmentManager fm,Class cls,boolean includeTarget,Runnable run){

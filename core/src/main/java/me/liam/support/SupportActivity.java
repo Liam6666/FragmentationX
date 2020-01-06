@@ -2,6 +2,7 @@ package me.liam.support;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     private SupportTransaction supportTransaction;
 
     private FragmentAnimation defaultAnimation = new ClassicHorizontalAnim();
+
+    boolean fragmentClickable = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +39,12 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
         }else {
             ActivityCompat.finishAfterTransition(this);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!fragmentClickable) return true;
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
