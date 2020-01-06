@@ -3,192 +3,101 @@
    ![演示图2](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE2.png)
    ![演示图3](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE3.png)
    
-    Beta 版本已经开放测试咯，引入办法：
-    
-    1.allprojects {
-         repositories {
-             maven { url 'https://jitpack.io' }
-         }
-     }
-     
-    2.implementation 'com.github.Liam6666:FragmentationX:1.0.0-beta03'
-   
-    这个库与 YoKeyword/Fragmentation 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
-    借鉴YoKeyword/Fragmentation的同时呢，我也加入了自己的一些想法，扩展了易用性，代码结构简单，通俗易懂。
-    
-    FragmentationX，是我为这个库起的新名字，因为适配了Android X，所以干脆就叫FragmentationX吧！
-    
-    这是一个文档草稿，后续放出Release 版本之后我会认真写一份API的文档，大家可以在Issues里提出意见或建议，一起让这个库变得更加优秀。
-    
-    下面是目前有的api，后续还会加入更多易用的api，如有什么想法，可以在Issues里提给我，我会非常感激。
-    
-    ------------------------ In Support Activity APIS -----------------------------
-    
-    public int getDefaultBackground();
+    **FragmentationX**
 
-    public void setDefaultAnimation(FragmentAnimation animation);
+> 这个库与 [YoKeyword大神的Fragmentation](https://github.com/YoKeyword/Fragmentation) 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
+借鉴[YoKeyword大神的Fragmentation](https://github.com/YoKeyword/Fragmentation)的同时呢，我也加入了自己的一些想法，扩展了易用性，代码结构简单，通俗易懂。
 
-    public FragmentAnimation getDefaultAnimation();
 
-    public <T extends SupportFragment> T findFragmentByClass(Class cls);
+> 致力于提升Android原生应用体验，主打单Activity + 多Fragment页面构架模式，降低耦合，提升流畅，纵享尽丝滑。
+> 
 
-    public void postDataToFragments(int code, Bundle data);
+ 1. 丰富API
 
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
+> 封装了多个易用API，满足绝大多数的使用场景。
 
-    public void loadRootFragment(int containerId, SupportFragment to);
+ 2. 自定义转场动画
 
-    public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments);
+> 一键设置全局动画 + 自定义设置动画。定制个性动画。
 
-    public void showHideAllFragment(SupportFragment show);
+ 3. 滑动关闭
 
-    public void start(SupportFragment to);
+> 加入SwipebackLayout，动动手指即可滑动页面。
 
-    public void start(SupportFragment to, boolean addToBackStack);
-
-    public void start(SupportFragment from, SupportFragment to);
-
-    public void start(SupportFragment from, SupportFragment to, boolean addToBackStack);
-
-    public void startWithPop(SupportFragment to);
-
-    public void startWithPop(SupportFragment from, SupportFragment to);
-
-    public void startWithPopTo(SupportFragment to, Class cls);
-
-    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
-
-    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls);
-
-    public void startWithPopTo(SupportFragment from, SupportFragment to, Class cls, boolean includeTarget);
-
-    public void pop();
-
-    public void popTo(Class cls);
-
-    public void popTo(Class cls, boolean includeTarget);
-        
-    ------------------------ In Support Fragment APIS -----------------------------
-    
-    public <T extends SupportFragment> T findFragmentByClass(Class cls);
-
-    public <T extends SupportFragment> T findChildFragmentByClass(Class cls);
-
-    public boolean dispatcherOnBackPressed();
-
-    public boolean onBackPressed();
-
-    public FragmentAnimation onCreateCustomerAnimation();
-
-    public void onEnterAnimEnd();
-
-    public void onSupportPause();
-
-    public void onSupportResume();
-
-    public void onSwipeDrag(SupportFragment beforeOne, int state, float scrollPercent);
-
-    public void onResult(int requestCode, int resultCode, Bundle data);
-
-    public void onPostedData(int code, Bundle data);
-
-    public void setResult(int resultCode, Bundle data);
-
-    public ExtraTransaction getExtraTransaction();
-
-    public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack);
-
-    public void loadRootFragment(int containerId, SupportFragment to);
-
-    public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments);
-
-    public void showHideAllFragment(SupportFragment show);
-
-    public void start(SupportFragment to);
-
-    public void start(SupportFragment to, boolean addToBackStack);
-
-    public void startForResult(SupportFragment to, int requestCode);
-
-    public void startWithPop(SupportFragment to);
-
-    public void startWithPopTo(SupportFragment to, Class cls);
-
-    public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
-
-    public void pop();
-
-    public void popTo(Class cls);
-
-    public void popTo(Class cls, boolean includeTarget);
-
-    public void popChild();
-
-    public void popChildTo(Class cls);
-
-    public void popChildTo(Class cls, boolean includeTarget);
-
-    public void popAllChild();
-    
-    public SwipeBackLayout attachSwipeBack(View v)；
-    
-    ------------------------ In Extra Transaction APIS -----------------------------
-    
-    public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim);
-
-    public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim);
-
-    public abstract ExtraTransaction setResult(int resultCode, Bundle data);
-
-    public abstract ExtraTransaction displayEnterAnim(boolean displayEnterAnim);
-
-    public abstract ExtraTransaction setTag(String tag);
-
-    public abstract ExtraTransaction addBackStack(boolean addBackStack);
-
-    public abstract ExtraTransaction show(SupportFragment... show);
-
-    public abstract ExtraTransaction hide(SupportFragment... hide);
-
-    public abstract ExtraTransaction runOnExecute(Runnable run);
-
-    public abstract void loadRootFragment(int containerId, SupportFragment to);
-
-    public abstract void start(SupportFragment to);
-
-    public abstract void startWithPop(SupportFragment to);
-
-    public abstract void startWithPopTo(SupportFragment to, Class popToCls);
-
-    public abstract void startWithPopTo(SupportFragment to, Class popToCls,boolean includeTarget);
-
-    public abstract void startForResult(SupportFragment to,int requestCode);
-
-    public abstract void pop();
-
-    public abstract void popChild();
-
-    public abstract void popTo(Class popToCls);
-
-    public abstract void popTo(Class popToCls,boolean includeTarget);
-
-    public abstract void popChildTo(Class popToCls);
-
-    public abstract void popChildTo(Class popToCls,boolean includeTarget);
-
-    public abstract void remove(SupportFragment remove);
-
-    public abstract void remove(SupportFragment remove, boolean anim);
-
+ 4. 无限嵌套
  
-    ------------------------ In Develop -----------------------------
-    
-    debugMode
-    
-    demo App
-    
-    fix know bugs
-    
-    and more functions in develop, welcome make 'star' and follow up me
-    
-    Thanks for https://github.com/YoKeyword/Fragmentation [DEPRECATED] 
+ > 支持无限嵌套，无需再担心逻辑错乱了。
+ 
+ 5. 自定义处理Back键事件
+
+> 自动处理了back事件，也支持重写onBackPressed自定义回退事件。
+
+``` 
+How to use:
+
+1.Add mave to project build.gradle
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+2.Add library
+implementation 'com.github.Liam6666:FragmentationX:xxx'
+
+
+3.
+public class WeChatActivity extends SupportActivity {
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_wechat_root);
+        if (findFragmentByClass(RootFragment.class) == null){
+            loadRootFragment(R.id.container,RootFragment.newInstance());
+        }
+    }
+}
+```
+
+> SupportActivity API Document:
+> 1.setDefaultAnimation 设置全局默认动画
+> 2.findFragmentByClass 查找Fragment对象
+> 3.postDataToFragments 发送一条消息，接收对象是当前入栈的所有fragment
+> 4.loadRootFragment 添加第一个fragment
+> 5.loadMultipleRootFragments 添加多个可切换显示的fragment
+> 6.showHideAllFragment 显示某一个fragment，并隐藏当前栈内的其他fragment
+> 7.start 启动的一个新的fragment
+> 8.startWithPop 启动一个新的fragment，并关闭当前界面
+> 9.startWithPopTo 启动一个新的fragment，并关闭当前界面到栈内的某一个位置
+> 10.pop 从栈底弹出一个fragment
+> 11.popTo 弹出多个fragment到栈内某一个位置
+
+
+> SupportFragment API Document
+> 1.findFragmentByClass 查找Fragment对象
+> 2.findChildFragmentByClass 查找子Fragment对象
+> 3.dispatcherOnBackPressed 分发Back键事件
+> 4.onBackPressed 消费Back键事件
+> 5.onCreateCustomerAnimation 重写完成自定义动画
+> 6.onLazyInit 懒加载
+> 7.onEnterAnimEnd 当入场动画结束时调用一次
+> 8.onSupportPause 当页面不可见时调用一次
+> 9.onSupportResume 当页面从不可见中恢复时调用一次
+> 10.onSwipeDrag 当触摸边缘开始滑动时调用
+> 11.onResult 同Activity的onResult
+> 12.onPostedData 从postDataToFragments接受到消息
+> 13.setResult 同Activity的setResult
+> 14.getExtraTransaction 自定义事物
+> 15.loadRootFragment 添加子fragment
+> 16.loadMultipleRootFragments 添加多个可切换的子fragment
+> 17.showHideAllFragment 显示隐藏栈内的fragment
+> 18.start 启动一个新的同级fragment
+> 19.startForResult 同Activity的startForResult
+> 20.startWithPop 启动一个新的fragment，并关闭当前界面
+> 21.startWithPopTo 启动一个新的fragment，并关闭当前界面到栈内的某一个位置
+> 22.pop 从栈底弹出一个fragment
+> 23.popTo 弹出多个fragment到栈内某一个位置
+> 24.popChild 从栈底弹出一个子fragment
+> 25.popChildTo 弹出多个子fragment到栈内某一个位置
+> 26.popAllChild 弹出所有的子fragment
