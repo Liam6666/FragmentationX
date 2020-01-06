@@ -60,7 +60,9 @@ public class WeChatActivity extends SupportActivity {
 }
 ```
 
-> SupportActivity API Document:
+```
+SupportActivity API Document:
+
 1.setDefaultAnimation 设置全局默认动画
 2.findFragmentByClass 查找Fragment对象
 3.postDataToFragments 发送一条消息，接收对象是当前入栈的所有fragment
@@ -73,8 +75,11 @@ public class WeChatActivity extends SupportActivity {
 10.pop 从栈底弹出一个fragment
 11.popTo 弹出多个fragment到栈内某一个位置
 
+```
 
-> SupportFragment API Document
+
+```
+SupportFragment API Document
 1.findFragmentByClass 查找Fragment对象
 2.findChildFragmentByClass 查找子Fragment对象
 3.dispatcherOnBackPressed 分发Back键事件
@@ -101,3 +106,6 @@ public class WeChatActivity extends SupportActivity {
 24.popChild 从栈底弹出一个子fragment
 25.popChildTo 弹出多个子fragment到栈内某一个位置
 26.popAllChild 弹出所有的子fragment
+
+
+```
