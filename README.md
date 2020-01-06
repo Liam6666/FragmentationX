@@ -1,4 +1,8 @@
 
+   ![演示图1](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE1.png)
+   ![演示图2](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE2.png)
+   ![演示图3](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE3.png)
+   
     Beta 版本已经开放测试咯，引入办法：
     
     1.allprojects {
