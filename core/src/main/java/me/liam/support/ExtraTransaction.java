@@ -184,6 +184,7 @@ public abstract class ExtraTransaction {
             actionQueue.enqueue(new Action() {
                 @Override
                 public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
@@ -200,6 +201,7 @@ public abstract class ExtraTransaction {
             actionQueue.enqueue(new Action() {
                 @Override
                 public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
@@ -209,6 +211,7 @@ public abstract class ExtraTransaction {
                     to.setCallBack(new SupportFragmentCallBack(){
                         @Override
                         public void onEnterAnimEnd() {
+                            if (from == null || from.getFragmentManager() == null) return;
                             FragmentTransaction ft = from.getFragmentManager().beginTransaction();
                             ft.remove(from);
                             supportCommit(ft);
@@ -231,6 +234,7 @@ public abstract class ExtraTransaction {
             actionQueue.enqueue(new Action() {
                 @Override
                 public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
                     bindFragmentOptions(to,from.getContainerId(),record);
                     to.setFragmentAnimation(record.fragmentAnimation);
                     FragmentTransaction ft = from.getFragmentManager().beginTransaction();
@@ -260,6 +264,7 @@ public abstract class ExtraTransaction {
             actionQueue.enqueue(new Action() {
                 @Override
                 public long run() {
+                    if (from == null || from.getFragmentManager() == null) return 0;
                     SupportFragment remove = FragmentUtils.getLastFragment(from.getFragmentManager());
                     if (remove == null) return 0;
                     long duration = AnimationUtils.loadAnimation(remove.getContext(),remove.getFragmentAnimation().getExitAnimId()).getDuration();
@@ -442,6 +447,7 @@ public abstract class ExtraTransaction {
         }
 
         void popTo(FragmentManager fm,Class cls,boolean includeTarget,Runnable run){
+            if (fm == null) return;
             SupportFragment remove = FragmentUtils.getLastFragment(fm);
             SupportFragment target = FragmentUtils.findFragmentByClass(fm,cls);
             if (remove == null || target == null) return;
