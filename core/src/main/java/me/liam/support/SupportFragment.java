@@ -155,6 +155,14 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     public void onCreatePopAnimations(boolean popEnter){
+        if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM)){
+            if (popEnter){
+                onSupportResume();
+            }else {
+                onSupportPause();
+            }
+            return;
+        }
         Animation animation;
         if (popEnter){
             animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopEnterAnimId());
@@ -417,8 +425,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popAll(getChildFragmentManager());
     }
 
-
-    public Handler getHandler() {
+    Handler getHandler() {
         if (handler == null){
             handler = new Handler(Looper.myLooper());
         }
@@ -445,6 +452,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 ((SupportActivity)getActivity())
                         .getSupportTransaction()
                         .remove(current,false);
+                ((SupportActivity)getActivity()).fragmentSwipeDrag = false;
             }
 
             @Override
@@ -466,6 +474,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 if (before != null){
                     before.onSupportResume();
                 }
+                ((SupportActivity)getActivity()).fragmentSwipeDrag = true;
             }
 
             @Override

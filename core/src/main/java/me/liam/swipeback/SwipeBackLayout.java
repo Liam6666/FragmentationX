@@ -334,28 +334,28 @@ public class SwipeBackLayout extends FrameLayout {
         setShadow(getResources().getDrawable(resId), edgeFlag);
     }
 
-    /**
-     * Scroll out contentView and finish the activity
-     */
-    public void scrollToFinishActivity() {
-        final int childWidth = mContentView.getWidth();
-        final int childHeight = mContentView.getHeight();
-
-        int left = 0, top = 0;
-        if ((mEdgeFlag & EDGE_LEFT) != 0) {
-            left = childWidth + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE;
-            mTrackingEdge = EDGE_LEFT;
-        } else if ((mEdgeFlag & EDGE_RIGHT) != 0) {
-            left = -childWidth - mShadowRight.getIntrinsicWidth() - OVERSCROLL_DISTANCE;
-            mTrackingEdge = EDGE_RIGHT;
-        } else if ((mEdgeFlag & EDGE_BOTTOM) != 0) {
-            top = -childHeight - mShadowBottom.getIntrinsicHeight() - OVERSCROLL_DISTANCE;
-            mTrackingEdge = EDGE_BOTTOM;
-        }
-
-        mDragHelper.smoothSlideViewTo(mContentView, left, top);
-        invalidate();
-    }
+//    /**
+//     * Scroll out contentView and finish the activity
+//     */
+//    public void scrollToFinishActivity() {
+//        final int childWidth = mContentView.getWidth();
+//        final int childHeight = mContentView.getHeight();
+//
+//        int left = 0, top = 0;
+//        if ((mEdgeFlag & EDGE_LEFT) != 0) {
+//            left = childWidth + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE;
+//            mTrackingEdge = EDGE_LEFT;
+//        } else if ((mEdgeFlag & EDGE_RIGHT) != 0) {
+//            left = -childWidth - mShadowRight.getIntrinsicWidth() - OVERSCROLL_DISTANCE;
+//            mTrackingEdge = EDGE_RIGHT;
+//        } else if ((mEdgeFlag & EDGE_BOTTOM) != 0) {
+//            top = -childHeight - mShadowBottom.getIntrinsicHeight() - OVERSCROLL_DISTANCE;
+//            mTrackingEdge = EDGE_BOTTOM;
+//        }
+//
+//        mDragHelper.smoothSlideViewTo(mContentView, left, top);
+//        invalidate();
+//    }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import me.liam.anim.FragmentAnimation;
@@ -31,6 +30,8 @@ public class SupportTransaction {
     final public static String FRAGMENTATION_EXIT_ANIM_ID = "Fragmentation:ExitAnimId";
     final public static String FRAGMENTATION_POP_ENTER_ANIM_ID = "Fragmentation:PopEnterAnimId";
     final public static String FRAGMENTATION_POP_EXIT_ANIM_ID = "Fragmentation:PopExitAnimId";
+
+    final public static String FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM = "Fragmentation:DontDisplaySelfPopAnim";
 
     final public static String FRAGMENTATION_SAVED_INSTANCE = "Fragmentation:SavedInstance";
 

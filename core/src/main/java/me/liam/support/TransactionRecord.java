@@ -33,4 +33,5 @@ class TransactionRecord {
 
     boolean removeAnim = true;
 
+    boolean dontDisplaySelfPopAnim = false;
 }

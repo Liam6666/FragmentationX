@@ -22,6 +22,8 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     boolean fragmentClickable = true;
 
+    boolean fragmentSwipeDrag = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
 
     @Override
     public void onBackPressed() {
+        if (fragmentSwipeDrag) return;
         SupportFragment activeFragment = FragmentUtils.getLastFragment(getSupportFragmentManager());
         if (activeFragment != null && activeFragment.dispatcherOnBackPressed()){
             return;

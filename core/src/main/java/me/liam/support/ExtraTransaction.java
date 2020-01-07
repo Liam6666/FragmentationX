@@ -22,6 +22,8 @@ public abstract class ExtraTransaction {
 
     public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim);
 
+    public abstract ExtraTransaction dontDisplaySelfPopAnim(boolean dontDisplaySelfPopAnim);
+
     public abstract ExtraTransaction setResult(int resultCode, Bundle data);
 
     public abstract ExtraTransaction displayEnterAnim(boolean displayEnterAnim);
@@ -89,6 +91,12 @@ public abstract class ExtraTransaction {
         @Override
         public ExtraTransaction setCustomerAnimations(int enterAnim, int exitAnim, int popEnterAnim, int popExitAnim) {
             record.fragmentAnimation = new FragmentAnimation(enterAnim,exitAnim, popEnterAnim, popExitAnim);
+            return this;
+        }
+
+        @Override
+        public ExtraTransaction dontDisplaySelfPopAnim(boolean dontDisplaySelfPopAnim) {
+            record.dontDisplaySelfPopAnim = dontDisplaySelfPopAnim;
             return this;
         }
 
@@ -406,6 +414,7 @@ public abstract class ExtraTransaction {
             args.putBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM, record.displayEnterAnim);
             args.putBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST, false);
             args.putBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE, false);
+            args.putBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM,record.dontDisplaySelfPopAnim);
         }
 
         void supportCommit(FragmentTransaction ft) {
