@@ -1,7 +1,7 @@
 
-   ![演示图1](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE1.png)
-   ![演示图2](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE2.png)
-   ![演示图3](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/%E6%88%AA%E5%9B%BE3.png)
+   ![演示图1](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/QQ%E5%9B%BE%E7%89%8720200106144602.gif)
+   ![演示图2](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/QQ%E5%9B%BE%E7%89%8720200106144617.gif)
+   ![演示图3](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/QQ%E5%9B%BE%E7%89%8720200106144620.gif)
    
     **FragmentationX**
 
