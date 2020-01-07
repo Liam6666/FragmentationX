@@ -218,16 +218,32 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         return getArguments().getInt(SupportTransaction.FRAGMENTATION_CONTAINER_ID,0);
     }
 
+    /**
+     * 在栈内查找Fragment对象，如果一个栈内存在多个同一个class的Fragment对象，则返回结果可能不准确
+     * @param cls
+     * @param <T>
+     * @return SupportFragment
+     */
     @Override
     public <T extends SupportFragment> T findFragmentByClass(Class cls) {
         return FragmentUtils.findFragmentByClass(getFragmentManager(),cls);
     }
 
+    /**
+     * 在栈内查找Child Fragment对象，如果一个栈内存在多个同一个class的Fragment对象，则返回结果可能不准确
+     * @param cls
+     * @param <T>
+     * @return SupportFragment
+     */
     @Override
     public <T extends SupportFragment> T findChildFragmentByClass(Class cls) {
         return FragmentUtils.findFragmentByClass(getChildFragmentManager(),cls);
     }
 
+    /**
+     * Back事件分发，不建议重写
+     * @return
+     */
     @Override
     public boolean dispatcherOnBackPressed() {
         if (getChildFragmentManager().getFragments().size() > 0){
@@ -239,6 +255,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         return onBackPressed();
     }
 
+    /**
+     * 重写此方法可自定义Back事件
+     * @return true 消耗事件并不再向下传递
+     */
     @Override
     public boolean onBackPressed() {
         if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK)){
@@ -248,31 +268,57 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         return false;
     }
 
+    /**
+     * 重写此方法可完成自定义Fragment动画
+     * 重写返回null并不会将Fragment设置为空动画
+     * @return FragmentAnimation
+     */
     @Override
     public FragmentAnimation onCreateCustomerAnimation() {
         return null;
     }
 
+    /**
+     * 懒加载
+     * @param savedInstanceState
+     */
     @Override
     public void onLazyInit(Bundle savedInstanceState) {
         getArguments().putBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST,true);
     }
 
+    /**
+     * 入场动画结束时执行一次
+     * 当Fragment从被回收的状态中恢复时并不会执行入场动画，所以也不会执行此方法
+     */
     @Override
     public void onEnterAnimEnd() {
 
     }
 
+    /**
+     * 当Fragment变为不可见状态时（启动了一个新的Fragment被遮住时）执行一次
+     * 执行hide操作时不会执行此方法
+     */
     @Override
     public void onSupportPause() {
 
     }
 
+    /**
+     * 当Fragment从不可见状态中恢复时执行一次
+     */
     @Override
     public void onSupportResume() {
 
     }
 
+    /**
+     * 当拖动返回时执行此方法，可重写
+     * @param beforeOne
+     * @param state
+     * @param scrollPercent
+     */
     @Override
     public void onSwipeDrag(SupportFragment beforeOne, int state, float scrollPercent) {
         if (beforeOne == null || beforeOne.getView() == null) return;
@@ -283,16 +329,32 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         }
     }
 
+    /**
+     * 接受返回数据
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onResult(int requestCode, int resultCode, Bundle data) {
 
     }
 
+    /**
+     * 接受全局消息
+     * @param code
+     * @param data
+     */
     @Override
     public void onPostedData(int code, Bundle data) {
 
     }
 
+    /**
+     * 设置返回数据
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void setResult(int resultCode, Bundle data) {
         ((SupportActivity)getActivity())
@@ -300,11 +362,23 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .setResult(this,resultCode,data);
     }
 
+    /**
+     * 自定义事件
+     * @return
+     */
     @Override
     public ExtraTransaction getExtraTransaction() {
         return new ExtraTransaction.ExtraTransactionImpl(this,getHandler());
     }
 
+    /**
+     * 创建一个根部Fragment，装载位置是Child Fragment Manager,相当于加载一个根部的子集Fragment
+     * @param containerId 容器
+     * @param to 要加载的对象
+     * @param anim 绑定动画
+     * @param playEnterAnim 是否展示入场动画
+     * @param addToBackStack 是否加入back stack
+     */
     @Override
     public void loadRootFragment(int containerId, SupportFragment to, FragmentAnimation anim, boolean playEnterAnim, boolean addToBackStack) {
         ((SupportActivity)getActivity())
@@ -319,6 +393,12 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .loadRootFragment(getChildFragmentManager(),containerId,to,((SupportActivity)getActivity()).getDefaultAnimation(),false,true);
     }
 
+    /**
+     * 同时加载多个子Fragment
+     * @param containerId 容器
+     * @param showPosition 显示第几个（从1开始）
+     * @param fragments 要加载的Fragment
+     */
     @Override
     public void loadMultipleRootFragments(int containerId, int showPosition, SupportFragment... fragments) {
         ((SupportActivity)getActivity())
@@ -326,6 +406,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .loadMultipleRootFragments(getChildFragmentManager(),containerId,showPosition,fragments);
     }
 
+    /**
+     * 显示一个Fragment，并隐藏当前Child Fragment Manager 栈内的其它Fragment
+     * @param show
+     */
     @Override
     public void showHideAllFragment(SupportFragment show) {
         ((SupportActivity)getActivity())
@@ -333,6 +417,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .showHideAllFragment(getChildFragmentManager(),show);
     }
 
+    /**
+     * 启动一个新的Fragment
+     * @param to
+     */
     @Override
     public void start(SupportFragment to) {
         ((SupportActivity)getActivity())
@@ -340,6 +428,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .start(this,to,true);
     }
 
+    /**
+     * 启动一个新的Fragment
+     * @param to
+     * @param addToBackStack 是否加入Back stack
+     */
     @Override
     public void start(SupportFragment to, boolean addToBackStack) {
         ((SupportActivity)getActivity())
@@ -347,6 +440,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .start(this,to,addToBackStack);
     }
 
+    /**
+     * 启动一个新的Fragment，并接受返回数据
+     * @param to
+     * @param requestCode
+     */
     @Override
     public void startForResult(SupportFragment to, int requestCode) {
         ((SupportActivity)getActivity())
@@ -354,7 +452,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .startForResult(this,to,requestCode);
     }
 
-
+    /**
+     * 启动一个新的Fragment并关闭当前Fragment
+     * @param to
+     */
     @Override
     public void startWithPop(SupportFragment to) {
         ((SupportActivity)getActivity())
@@ -362,6 +463,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .startWithPop(this,to);
     }
 
+    /**
+     * 启动一个新的Fragment，并弹出栈内的Fragment到指定位置
+     * @param to
+     * @param cls
+     */
     @Override
     public void startWithPopTo(SupportFragment to, Class cls) {
         ((SupportActivity)getActivity())
@@ -369,6 +475,12 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .startWithPopTo(this,to,cls,true);
     }
 
+    /**
+     * 启动一个新的Fragment，并弹出栈内的Fragment到指定位置
+     * @param to
+     * @param cls
+     * @param includeTarget 是否包含指定对象
+     */
     @Override
     public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget) {
         ((SupportActivity)getActivity())
@@ -376,6 +488,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .startWithPopTo(this,to,cls,includeTarget);
     }
 
+    /**
+     * 弹出栈内最后一个Fragment
+     */
     @Override
     public void pop() {
         ((SupportActivity)getActivity())
@@ -383,6 +498,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .pop(getFragmentManager());
     }
 
+    /**
+     * 弹出栈内的Fragment到指定位置
+     * @param cls
+     */
     @Override
     public void popTo(Class cls) {
         ((SupportActivity)getActivity())
@@ -390,6 +509,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popTo(getFragmentManager(),cls,true);
     }
 
+    /**
+     * 弹出栈内的Fragment到指定位置
+     * @param cls
+     * @param includeTarget 是否包含指定对象
+     */
     @Override
     public void popTo(Class cls, boolean includeTarget) {
         ((SupportActivity)getActivity())
@@ -397,6 +521,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popTo(getFragmentManager(),cls,includeTarget);
     }
 
+    /**
+     * 弹出Child Fragment Manager内的最后一个Fragment
+     */
     @Override
     public void popChild() {
         ((SupportActivity)getActivity())
@@ -404,6 +531,10 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .pop(getChildFragmentManager());
     }
 
+    /**
+     * 弹出Child Fragment Manager的Fragment到指定位置
+     * @param cls
+     */
     @Override
     public void popChildTo(Class cls) {
         ((SupportActivity)getActivity())
@@ -411,6 +542,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popTo(getChildFragmentManager(),cls,true);
     }
 
+    /**
+     * 弹出Child Fragment Manager的Fragment到指定位置
+     * @param cls
+     * @param includeTarget 是否包含指定对象
+     */
     @Override
     public void popChildTo(Class cls, boolean includeTarget) {
         ((SupportActivity)getActivity())
@@ -418,6 +554,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .popTo(getChildFragmentManager(),cls,includeTarget);
     }
 
+    /**
+     * 弹出Child Fragment Manager所有的Fragment
+     */
     @Override
     public void popAllChild() {
         ((SupportActivity)getActivity())
@@ -436,6 +575,11 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         this.callBack = callBack;
     }
 
+    /**
+     * 关联SwipeBackLayout
+     * @param v
+     * @return
+     */
     public SwipeBackLayout attachSwipeBack(View v){
         final SupportFragment current = this;
         swipeBackLayout = new SwipeBackLayout(getContext());

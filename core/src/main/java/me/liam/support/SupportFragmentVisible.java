@@ -5,6 +5,9 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+/**
+ * 管理Fragment的显示和隐藏状态
+ */
 class SupportFragmentVisible {
 
     final public static String FRAGMENTATION_IS_HIDDEN = "Fragmentation:IsHidden";
