@@ -22,6 +22,11 @@ public abstract class ExtraTransaction {
 
     public abstract ExtraTransaction setCustomerAnimations(int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim);
 
+    /**
+     * 不展示pop动画，仅能生效一次，不影响其他事件
+     * @param dontDisplaySelfPopAnim
+     * @return
+     */
     public abstract ExtraTransaction dontDisplaySelfPopAnim(boolean dontDisplaySelfPopAnim);
 
     public abstract ExtraTransaction setResult(int resultCode, Bundle data);
@@ -111,18 +116,21 @@ public abstract class ExtraTransaction {
         @Override
         public ExtraTransaction displayEnterAnim(boolean displayEnterAnim) {
             record.displayEnterAnim = displayEnterAnim;
+            getArguments(from).putBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM,record.displayEnterAnim);
             return this;
         }
 
         @Override
         public ExtraTransaction setTag(String tag) {
             record.tag = tag;
+            getArguments(from).putString(SupportTransaction.FRAGMENTATION_TAG,record.tag);
             return this;
         }
 
         @Override
         public ExtraTransaction addBackStack(boolean addBackStack) {
             record.addBackStack = addBackStack;
+            getArguments(from).putBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK,record.addBackStack);
             return this;
         }
 

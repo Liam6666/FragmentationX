@@ -98,10 +98,19 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                     if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_PLAY_ENTER_ANIM)){
                         animation = AnimationUtils.loadAnimation(getContext(),R.anim.anim_empty);
                     }else {
-                        SupportFragment beforeOne = FragmentUtils.getBeforeOne(getFragmentManager(),this);
+                        final SupportFragment beforeOne = FragmentUtils.getBeforeOne(getFragmentManager(),this);
                         animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getEnterAnimId());
                         if (beforeOne != null){
-                            beforeOne.onCreatePopAnimations(false);
+                            if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM)){
+                                getHandler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        beforeOne.onSupportPause();
+                                    }
+                                },animation.getDuration());
+                            }else {
+                                beforeOne.onCreatePopAnimations(false);
+                            }
                         }
                     }
                     getHandler().postDelayed(new Runnable() {
@@ -120,13 +129,41 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 if (!enter){
                     SupportFragment show = FragmentUtils.getLastActiveFragment(getFragmentManager());
                     if (show != null){
-                        show.onCreatePopAnimations(true);
+                        if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM)){
+                            show.onSupportResume();
+                        }else {
+                            show.onCreatePopAnimations(true);
+                        }
                     }
                     animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getExitAnimId());
                 }
                 break;
         }
         return animation;
+    }
+
+    public void onCreatePopAnimations(boolean popEnter){
+        Animation animation;
+        if (popEnter){
+            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopEnterAnimId());
+            getHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSupportResume();
+                }
+            },animation.getDuration());
+        }else {
+            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopExitAnimId());
+            getHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onSupportPause();
+                }
+            },animation.getDuration());
+        }
+        if (getView() != null){
+            getView().startAnimation(animation);
+        }
     }
 
     @Override
@@ -152,38 +189,6 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 .getSupportTransaction()
                 .onResult(this);
         super.onDestroyView();
-    }
-
-    public void onCreatePopAnimations(boolean popEnter){
-        if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM)){
-            if (popEnter){
-                onSupportResume();
-            }else {
-                onSupportPause();
-            }
-            return;
-        }
-        Animation animation;
-        if (popEnter){
-            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopEnterAnimId());
-            getHandler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    onSupportResume();
-                }
-            },animation.getDuration());
-        }else {
-            animation = AnimationUtils.loadAnimation(getContext(),fragmentAnimation.getPopExitAnimId());
-            getHandler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    onSupportPause();
-                }
-            },animation.getDuration());
-        }
-        if (getView() != null){
-            getView().startAnimation(animation);
-        }
     }
 
     public boolean isSavedInstance(){
@@ -280,6 +285,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     /**
      * 懒加载
+     * 用于FragmentPager中时请使用最新的FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT方式创建适配器
      * @param savedInstanceState
      */
     @Override
@@ -326,6 +332,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         beforeOne.getView().setX((1.0f - scrollPercent) * startX);
         if (state == SwipeBackLayout.STATE_IDLE && scrollPercent == 0){
             beforeOne.getView().setX(0);
+            ((SupportActivity)getActivity()).fragmentSwipeDrag = false;
         }
     }
 

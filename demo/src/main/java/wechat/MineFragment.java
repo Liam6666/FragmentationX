@@ -44,11 +44,16 @@ public class MineFragment extends SupportFragment {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getChildFragmentManager().getFragments().size() > 10){
-                    popAllChild();
-                }else {
-                    loadRootFragment(R.id.mine_childContainer,SettingsFragment.newInstance(),new ClassicVerticalAnim(),true,true);
-                }
+//                if (getChildFragmentManager().getFragments().size() > 10){
+//                    popAllChild();
+//                }else {
+//                    loadRootFragment(R.id.mine_childContainer,SettingsFragment.newInstance(),new ClassicVerticalAnim(),true,true);
+//                }
+                ((RootFragment)getParentFragment()).getExtraTransaction()
+                        .dontDisplaySelfPopAnim(true)
+                        .setCustomerAnimations(R.anim.classic_vertical_enter,R.anim.classic_vertical_exit)
+                        .start(SettingsFragment.newInstance());
+
             }
         });
         profile.setOnClickListener(new View.OnClickListener() {
