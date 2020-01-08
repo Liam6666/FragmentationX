@@ -3,7 +3,7 @@
    ![演示图2](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/QQ%E5%9B%BE%E7%89%8720200106144617.gif)
    ![演示图3](https://github.com/Liam6666/FragmentationX/blob/master/screenshot/QQ%E5%9B%BE%E7%89%8720200106144620.gif)
    
-    * * FragmentationX * *
+   #FragmentationX
 
 > 这个库与 [YoKeyword大神的Fragmentation](https://github.com/YoKeyword/Fragmentation) 的非常相似，用法也大致相同，我之前一直使用，遗憾的是作者忙于工作很久没有更新了，无奈只能自己动手做一个。
 借鉴[YoKeyword大神的Fragmentation](https://github.com/YoKeyword/Fragmentation)的同时呢，我也加入了自己的一些想法，扩展了易用性，代码结构简单，通俗易懂。
