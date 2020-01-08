@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import me.liam.support.SupportActivity;
+import viewpager.ViewPagerActivity;
 import wechat.WeChatActivity;
 import zhihu.ZhiHuActivity;
 
@@ -31,6 +32,12 @@ public class MainActivity extends SupportActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this, ZhiHuActivity.class));
+            }
+        });
+        findViewById(R.id.btn_vp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ViewPagerActivity.class));
             }
         });
     }

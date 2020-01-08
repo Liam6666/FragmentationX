@@ -21,4 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ZHI HU App"/>
+    <Button
+        android:id="@+id/btn_vp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View pager"/>
 </LinearLayout>

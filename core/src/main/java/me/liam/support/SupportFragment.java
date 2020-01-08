@@ -75,16 +75,16 @@ public class SupportFragment extends Fragment implements ISupportFragment {
         if (isSavedInstance()){
             resumeAnim();
         }
-        if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST)
-                && !isHidden()){
-            onLazyInit(savedInstanceState);
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getArguments().putBoolean(SupportTransaction.FRAGMENTATION_SAVED_INSTANCE,false);
+        if (!getArguments().getBoolean(SupportTransaction.FRAGMENTATION_INIT_LIST)
+                && !isHidden()){
+            onLazyInit(null);
+        }
     }
 
     @Nullable
