@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "me.liam.fragmentation"
+        applicationId "me.liam.fragmentation.demo"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
@@ -20,6 +23,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+
     implementation 'androidx.appcompat:appcompat:1.2.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     testImplementation 'junit:junit:4.12'

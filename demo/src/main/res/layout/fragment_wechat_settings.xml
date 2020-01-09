@@ -1,59 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        app:navigationIcon="@mipmap/back"
         app:title="设置"
-        app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@mipmap/back"/>
+        app:titleTextColor="#FFFFFF" />
+
     <LinearLayout
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
         <TextView
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="消息通知"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:textColor="#333333"/>
+            android:text="消息通知"
+            android:textColor="#333333" />
+
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"/>
+            android:clickable="true" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#AAAAAA"/>
+        android:background="#AAAAAA" />
+
     <LinearLayout
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
         <TextView
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="消息通知"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:textColor="#333333"/>
+            android:text="消息通知"
+            android:textColor="#333333" />
+
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"/>
+            android:clickable="true" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="#AAAAAA"/>
+        android:background="#AAAAAA" />
 </LinearLayout>
