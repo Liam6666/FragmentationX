@@ -2,6 +2,7 @@ package me.liam.fragmentation.support
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 
 import java.util.ArrayList
@@ -30,7 +31,7 @@ open class SupportActivity : AppCompatActivity(), ISupportActivity {
             val fragmentList = ArrayList<SupportFragment>()
             supportFragmentManager.getAllFragments(fragmentList)
             for (f in fragmentList) {
-                f.fragmentAnimation = this.defaultAnimation
+                f.fragmentAnimation = field
             }
         }
 

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,15 @@ import me.liam.fragmentation.swipeback.SwipeBackLayout
 open class SupportFragment : Fragment(), ISupportFragment {
 
     var fragmentAnimation: FragmentAnimation? = null
+        set(value) {
+            field = value ?: NoneAnim()
+            arguments?.apply {
+                field?.enterAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_ENTER_ANIM_ID, it) }
+                field?.exitAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_EXIT_ANIM_ID, it) }
+                field?.popEnterAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_POP_ENTER_ANIM_ID, it) }
+                field?.popExitAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_POP_EXIT_ANIM_ID, it) }
+            }
+        }
 
     private var supportFragmentVisible = SupportFragmentVisible()
 
@@ -37,7 +47,7 @@ open class SupportFragment : Fragment(), ISupportFragment {
                 ?: false
 
     val containerId: Int
-        get() = arguments!!.getInt(SupportTransaction.FRAGMENTATION_CONTAINER_ID, 0)
+        get() = arguments?.getInt(SupportTransaction.FRAGMENTATION_CONTAINER_ID, 0) ?: 0
 
     /**
      * 自定义事件
@@ -51,8 +61,7 @@ open class SupportFragment : Fragment(), ISupportFragment {
         super.onAttach(context)
         supportFragmentVisible.onAttach(this)
 
-        val animation = onCreateCustomerAnimation()
-        setFragmentAnimation(animation)
+        onCreateCustomerAnimation()?.let { fragmentAnimation = it }
 
         defaultBackgroundColor = (activity as? SupportActivity)?.defaultBackground ?: Color.WHITE
     }
@@ -63,8 +72,9 @@ open class SupportFragment : Fragment(), ISupportFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        swipeBackLayout?.getChildAt(0)?.setBackgroundColor(defaultBackgroundColor)
-        getView()?.setBackgroundColor(defaultBackgroundColor)
+        if (swipeBackLayout != null) {
+            swipeBackLayout?.getChildAt(0)?.setBackgroundColor(defaultBackgroundColor)
+        } else if (getView() != null) getView()?.setBackgroundColor(defaultBackgroundColor)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -95,7 +105,10 @@ open class SupportFragment : Fragment(), ISupportFragment {
                 } else {
                     val beforeOne = fragmentManager?.getBeforeOne(this)
                     animation = fragmentAnimation?.enterAnimId?.let { AnimationUtils.loadAnimation(context, it) }
-                    beforeOne?.onCreatePopAnimations(false)
+                    if (arguments?.getBoolean(SupportTransaction.FRAGMENTATION_DONT_DISPLAY_SELF_POP_ANIM) == true)
+                        handler.postDelayed({ beforeOne?.onSupportPause() }, animation?.duration
+                                ?: 0)
+                    else beforeOne?.onCreatePopAnimations(false)
                 }
                 handler.postDelayed({
                     (activity as? SupportActivity)?.fragmentClickable = true
@@ -168,17 +181,6 @@ open class SupportFragment : Fragment(), ISupportFragment {
 
     internal fun getFragmentAnimation(): FragmentAnimation? {
         return fragmentAnimation
-    }
-
-    internal fun setFragmentAnimation(animation: FragmentAnimation?) {
-        this.fragmentAnimation = animation ?: NoneAnim()
-
-        arguments?.apply {
-            fragmentAnimation?.enterAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_ENTER_ANIM_ID, it) }
-            fragmentAnimation?.exitAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_EXIT_ANIM_ID, it) }
-            fragmentAnimation?.popEnterAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_POP_ENTER_ANIM_ID, it) }
-            fragmentAnimation?.popExitAnimId?.let { putInt(SupportTransaction.FRAGMENTATION_POP_EXIT_ANIM_ID, it) }
-        }
     }
 
     /**

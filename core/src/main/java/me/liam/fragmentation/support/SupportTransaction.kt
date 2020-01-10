@@ -3,6 +3,7 @@ package me.liam.fragmentation.support
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.AnimationUtils
 import java.util.UUID
 
@@ -56,6 +57,7 @@ class SupportTransaction internal constructor(private val iSupportActivity: ISup
                 for (to in fragments) {
                     bindFragmentOptions(to, containerId, false, false)
                     to.fragmentAnimation = null
+
                     ft.add(containerId, to)
                     if (position == showPosition) {
                         ft.show(to)

@@ -2,7 +2,8 @@ package me.liam.fragmentation.anim
 
 import me.liam.fragmentation.R
 
-open class FragmentAnimation @JvmOverloads constructor(enterAnimId: Int, exitAnimId: Int, popEnterAnimId: Int = R.anim.anim_empty, popExitAnimId: Int = R.anim.anim_empty) {
+open class FragmentAnimation constructor(enterAnimId: Int, exitAnimId: Int,
+                                         popEnterAnimId: Int = R.anim.anim_empty, popExitAnimId: Int = R.anim.anim_empty) {
 
     var enterAnimId: Int = 0
         internal set
