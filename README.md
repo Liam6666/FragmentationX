@@ -43,7 +43,7 @@ allprojects {
 }
 
 2.Add library
-implementation 'com.github.Liam6666:FragmentationX:1.0.2.1'
+implementation 'com.github.Liam6666:FragmentationX:1.0.2.2'
 
 
 3.
