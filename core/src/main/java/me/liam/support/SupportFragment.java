@@ -265,6 +265,7 @@ public class SupportFragment extends Fragment implements ISupportFragment {
 
     /**
      * 重写此方法可自定义Back事件
+     * 注意：嵌套关系中，如果parentFragment没有加入backStack，则当前整个Fragment都不会响应此方法
      * @return true 消耗事件并不再向下传递
      */
     @Override
