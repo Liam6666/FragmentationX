@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import java.util.LinkedList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -251,8 +253,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
      */
     @Override
     public boolean dispatcherOnBackPressed() {
-        if (getChildFragmentManager().getFragments().size() > 0){
-            SupportFragment lastActive = FragmentUtils.getLastFragment(getChildFragmentManager());
+        LinkedList<SupportFragment> backStackList = FragmentUtils.getBackStackFragments(getChildFragmentManager());
+        if (backStackList.size() > 0){
+            SupportFragment lastActive = backStackList.getLast();
             if (lastActive != null){
                 return lastActive.dispatcherOnBackPressed();
             }
@@ -266,11 +269,21 @@ public class SupportFragment extends Fragment implements ISupportFragment {
      */
     @Override
     public boolean onBackPressed() {
-        if (getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK)){
+        if (isBackStack()){
             pop();
             return true;
         }
         return false;
+    }
+
+    /**
+     * 当前Fragment是否被加入back键回退栈
+     * @return
+     */
+    @Override
+    public boolean isBackStack() {
+        if (getArguments() == null) return false;
+        return getArguments().getBoolean(SupportTransaction.FRAGMENTATION_BACK_STACK);
     }
 
     /**

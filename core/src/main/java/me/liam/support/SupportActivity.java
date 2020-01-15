@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -33,15 +34,21 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
     @Override
     public void onBackPressed() {
         if (fragmentSwipeDrag) return;
-        SupportFragment activeFragment = FragmentUtils.getLastFragment(getSupportFragmentManager());
-        if (activeFragment != null && activeFragment.dispatcherOnBackPressed()){
-            return;
-        }
-        if (FragmentUtils.getInManagerFragments(getSupportFragmentManager()).size() > 1){
+        if (FragmentUtils.getActiveList(getSupportFragmentManager()).size() > 1){
+            SupportFragment activeFragment = FragmentUtils.getLastActiveFragment(getSupportFragmentManager());
+            if (activeFragment == null) {
+                ActivityCompat.finishAfterTransition(this);
+                return;
+            }
+            if (activeFragment.dispatcherOnBackPressed()){
+                return;
+            }
             pop();
         }else {
             ActivityCompat.finishAfterTransition(this);
         }
+
+
     }
 
     @Override

@@ -64,17 +64,17 @@ public class MineFragment extends SupportFragment {
         });
         return rootView;
     }
-
-    @Override
-    public boolean onBackPressed() {
-        if (getChildFragmentManager().getFragments().size() > 0){
-            popChild();
-            return true;
-        }else {
-            ((RootFragment)getParentFragment()).onBackPressed();
-            return true;
-        }
-    }
+//
+//    @Override
+//    public boolean onBackPressed() {
+//        if (getChildFragmentManager().getFragments().size() > 0){
+//            popChild();
+//            return true;
+//        }else {
+//            ((RootFragment)getParentFragment()).onBackPressed();
+//            return true;
+//        }
+//    }
 
     @Override
     public void onLazyInit(Bundle savedInstanceState) {

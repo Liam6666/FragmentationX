@@ -15,6 +15,8 @@ public interface ISupportFragment {
 
     public boolean onBackPressed();
 
+    public boolean isBackStack();
+
     public FragmentAnimation onCreateCustomerAnimation();
 
     public void onLazyInit(Bundle savedInstanceState);

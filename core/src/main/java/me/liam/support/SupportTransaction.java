@@ -16,7 +16,7 @@ import me.liam.helper.FragmentUtils;
 import me.liam.queue.Action;
 import me.liam.queue.ActionQueue;
 
-public class SupportTransaction {
+class SupportTransaction {
 
     final public static String FRAGMENTATION_CONTAINER_ID = "Fragmentation:ContainerId";
     final public static String FRAGMENTATION_TAG = "Fragmentation:Tag";

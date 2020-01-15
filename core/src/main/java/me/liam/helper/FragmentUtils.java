@@ -8,7 +8,6 @@ import java.util.NoSuchElementException;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import me.liam.support.SupportFragment;
-import me.liam.support.SupportTransaction;
 
 public class FragmentUtils {
 
@@ -104,5 +103,18 @@ public class FragmentUtils {
             return list.get(i);
         }
         return null;
+    }
+
+    public static LinkedList<SupportFragment> getBackStackFragments(FragmentManager fm){
+        LinkedList<SupportFragment> linkedList = new LinkedList<>();
+        for (Fragment f : fm.getFragments()){
+            if (f instanceof SupportFragment
+                    && !f.isRemoving()
+                    && !f.isDetached()
+                    && ((SupportFragment)f).isBackStack()){
+                linkedList.add((SupportFragment)f);
+            }
+        }
+        return linkedList;
     }
 }

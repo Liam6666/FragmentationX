@@ -77,13 +77,13 @@ public class RootFragment extends SupportFragment {
 
     @Override
     public boolean onBackPressed() {
-//        return super.onBackPressed();
-        if (!homePageFragment.isVisible()){
-            showHideAllFragment(homePageFragment);
-            return true;
-        }else {
-            getActivity().finish();
-            return true;
-        }
+        return super.onBackPressed();
+//        if (!homePageFragment.isVisible()){
+//            showHideAllFragment(homePageFragment);
+//            return true;
+//        }else {
+//            getActivity().finish();
+//            return true;
+//        }
     }
 }
