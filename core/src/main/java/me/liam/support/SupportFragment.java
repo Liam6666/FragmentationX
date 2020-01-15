@@ -614,14 +614,9 @@ public class SupportFragment extends Fragment implements ISupportFragment {
                 if (before != null){
                     onSwipeDrag(before,SwipeBackLayout.STATE_IDLE,0);
                 }
-                getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((SupportActivity)getActivity())
-                                .getSupportTransaction()
-                                .remove(current,false);
-                    }
-                });
+                ((SupportActivity)getActivity())
+                        .getSupportTransaction()
+                        .remove(current,false);
                 ((SupportActivity)getActivity()).fragmentSwipeDrag = false;
             }
 

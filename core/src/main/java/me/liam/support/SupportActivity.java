@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -40,15 +39,11 @@ public class SupportActivity extends AppCompatActivity implements ISupportActivi
                 ActivityCompat.finishAfterTransition(this);
                 return;
             }
-            if (activeFragment.dispatcherOnBackPressed()){
-                return;
-            }
+            if (activeFragment.dispatcherOnBackPressed()) return;
             pop();
         }else {
             ActivityCompat.finishAfterTransition(this);
         }
-
-
     }
 
     @Override
