@@ -341,4 +341,22 @@ class SupportTransaction {
             }
         });
     }
+
+    public void startMultiple(final SupportFragment from, final SupportFragment... to){
+        actionQueue.enqueue(new Action() {
+            @Override
+            public long run() {
+                if (from == null || from.getFragmentManager() == null) return 0;
+                FragmentTransaction ft = from.getFragmentManager().beginTransaction();
+                for (SupportFragment t : to){
+                    bindFragmentOptions(t,from.getContainerId(),true,true);
+                    t.setFragmentAnimation(iSupportActivity.getDefaultAnimation());
+                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    ft.add(t.getContainerId(),t);
+                }
+                supportCommit(ft);
+                return 0;
+            }
+        });
+    }
 }

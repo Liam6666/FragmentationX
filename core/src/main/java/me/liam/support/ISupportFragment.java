@@ -57,6 +57,8 @@ public interface ISupportFragment {
 
     public void startWithPopTo(SupportFragment to, Class cls, boolean includeTarget);
 
+    public void startMultiple(SupportFragment... to);
+
     public void pop();
 
     public void popTo(Class cls);

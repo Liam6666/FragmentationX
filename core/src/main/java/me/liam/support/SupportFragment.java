@@ -510,6 +510,17 @@ public class SupportFragment extends Fragment implements ISupportFragment {
     }
 
     /**
+     * 启动多个Fragment
+     * @param to
+     */
+    @Override
+    public void startMultiple(SupportFragment... to) {
+        ((SupportActivity)getActivity())
+                .getSupportTransaction()
+                .startMultiple(this,to);
+    }
+
+    /**
      * 弹出栈内最后一个Fragment
      */
     @Override
