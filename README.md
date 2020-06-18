@@ -109,6 +109,6 @@ SupportFragment API Document
 24.popChild 从栈底弹出一个子fragment
 25.popChildTo 弹出多个子fragment到栈内某一个位置
 26.popAllChild 弹出所有的子fragment
-
+27.startMultiple 启动多个fragment
 
 ```
